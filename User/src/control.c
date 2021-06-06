@@ -82,7 +82,7 @@ static int AbnormalSpinFlag = 0;
 #define MOVING_LEFT 1
 #define MOVING_RIGHT -2
 
-#define ENDING_TAILING_THRESH 7
+#define ENDING_TAILING_THRESH 5 // 巡线5s后才开始检测是否结束
 
 int step = 0; // 当前程序行进到第几步
 int g_iMytimestamp = 0; // 用于判断程序状态的时间戳
@@ -93,9 +93,9 @@ int MovingCar = 1; // 是否停车，为0则停
 int lastTurn = 0; // 记录上次转向
 int direct = 0; // 0朝前
 int isTurn = 0; // 记录是否正在转弯，1为正在转弯
-int directZeroCnt = 0; // 连续朝0方向前进的次数
-
+int directZeroCnt = 0; // 连续朝0方向前进的次数，检测到四个1设置为100
 char detected = 0x01 | (0x01 << 1) | 0x01 << 2 | 0x01 << 3;// 记录红外传感器测量是否是四个1
+
 int stopDetect(){
 	char fraredresult  = InfraredDetectAll(); // 记录红外数据
 	if(fraredresult == detected){
@@ -820,40 +820,69 @@ void Steer(float direct, float speed)
 ** 备    注: 
 ********************喵呜实验室MiaowLabs版权所有**************************
 ***************************************************************/
+// void TailingControl(void)
+// {
+// #if INFRARE_DEBUG_EN > 0
+// 	char buff[32];	
+// #endif
+// 	char result;
+// 	float direct = 0;
+// 	float speed = 0;
+
+// 	result = InfraredDetect();
+// 	if(result & infrared_channel_Lb)
+// 		direct = -10;
+// 	else if(result & infrared_channel_La)
+// 		direct = -4;
+// 	else if(result & infrared_channel_Rb)
+// 		direct = 10;
+// 	else if(result & infrared_channel_Ra)
+// 		direct = 4;
+// 	else
+// 		direct = 0;
+// 	if(g_RunTime > ENDING_TAILING_THRESH){// 巡线最后一段直线检测，等过了x秒开始
+// 		if(direct == 0){
+// 			directZeroCnt ++;
+// 		}
+// 		if(direct != 0){
+// 			directZeroCnt = 0;
+// 		}
+// 	}
+// 	speed = 2.2;
+// 	Steer(direct, speed);
+
+// #if INFRARE_DEBUG_EN > 0
+// 	sprintf(buff, "Steer:%d, Speed:%d\r\n",(int)direct,  (int)speed);
+// 	DebugOutStr(buff);
+// #endif
+// }
+
 void TailingControl(void)
 {
-#if INFRARE_DEBUG_EN > 0
-	char buff[32];	
-#endif
 	char result;
 	float direct = 0;
 	float speed = 0;
 
-	result = InfraredDetect();
-	if(result & infrared_channel_Lb)
-		direct = -10;
-	else if(result & infrared_channel_La)
-		direct = -4;
-	else if(result & infrared_channel_Rb)
-		direct = 10;
-	else if(result & infrared_channel_Ra)
-		direct = 4;
-	else
-		direct = 0;
 	if(g_RunTime > ENDING_TAILING_THRESH){// 巡线最后一段直线检测，等过了x秒开始
-		if(direct == 0){
-			directZeroCnt ++;
-		}
-		if(direct != 0){
-			directZeroCnt = 0;
+		result = InfraredDetectAll();
+		if(result == detected){
+			directZeroCnt = 100;
+			Steer(0,0);
 		}
 	}
-	speed = 2.2;
-	Steer(direct, speed);
-
-#if INFRARE_DEBUG_EN > 0
-	sprintf(buff, "Steer:%d, Speed:%d\r\n",(int)direct,  (int)speed);
-	DebugOutStr(buff);
-#endif
+	else{
+		result = InfraredDetect();
+		if(result & infrared_channel_Lb)
+			direct = -10;
+		else if(result & infrared_channel_La)
+			direct = -4;
+		else if(result & infrared_channel_Rb)
+			direct = 10;
+		else if(result & infrared_channel_Ra)
+			direct = 4;
+		else
+			direct = 0;
+		speed = 2.2;
+		Steer(direct, speed);
+	}
 }
-

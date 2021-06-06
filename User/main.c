@@ -64,15 +64,7 @@ int main(void)
 	while (1)
 	{
 		
-		SecTask();			//秒级任务
-
-		// if(SoftTimer[1] == 0)
-		// {// 每隔20ms 执行一次
-		// 	SoftTimer[1] = 20;
-		// 	ResponseIMU();			
-		// 	DebugService();			
-		// 	Parse(Uart3Buffer);
-		// }			
+		SecTask();			//秒级任务，刷新电压，更新g_RunTime
   	
 		if(SoftTimer[2] == 0)
 		{
@@ -82,17 +74,9 @@ int main(void)
 			Read_Distane();
 
 			if(IsUltraOK())
-				UltraControl(3);
-
-		// 	if(g_CarRunningMode == ULTRA_FOLLOW_MODE){
-		// 		if(IsUltraOK())UltraControl(0);	//超声波跟随模式
-	 	// 	}
-		// 	if(g_CarRunningMode == ULTRA_AVOID_MODE){
-		// 		if(IsUltraOK())UltraControl(1);	//超声波避障模式
-	 	// 	}
-		// 	else if(g_CarRunningMode == INFRARED_TRACE_MODE){
-		// 		TailingControl();
-		// 	}
+				UltraControl(3); // 巡线避障
+			// if(IsUltraOK())
+			// 	UltraControl(2); // 前进后退左右转
 		}			
 	}
 }
