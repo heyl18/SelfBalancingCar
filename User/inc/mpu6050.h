@@ -15,7 +15,7 @@
 #ifndef __MPU6050_H__
 #define __MPU6050_H__
 
-extern short g_fGyro_x,g_fAccel_y,g_fAccel_z;
+extern short g_fGyro_x,g_fAccel_y,g_fAccel_z,g_fAccel_x;
 extern short g_fGyro_z;
 
 void MPU6050_Init(void);

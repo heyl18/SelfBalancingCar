@@ -12,7 +12,8 @@ typedef struct _PID_t{
 #define GYRO_SENSITIVITY 16.4
 #define M_PI 3.14159265359
 #define    GYRO_OFFSET      0          //陀螺仪零点偏移值
-#define GYRO_Z_OFFSET 2.55 //陀螺仪z轴零点偏移值
+#define GYRO_Z_OFFSET -0.815 //陀螺仪z轴零点偏移值
+#define ACCEL_X_OFFSET 119.5
 //#define 	 GRAVITY_OFFSET   (g_iGravity_Offset)      			//
 #define    CAR_ZERO_ANGLE   (2)
 #define CAR_ANGLE_SET 0
@@ -47,6 +48,7 @@ extern float g_fCarAngle;
 extern float g_fGyroAngleSpeed;		   			
 extern float g_fGravityAngle;			
 extern float g_fYawAngle; // yaw角，用于修正小车前进方向
+extern float g_fDx;
 
 extern PID_t g_tCarAnglePID;
 extern PID_t g_tCarSpeedPID;

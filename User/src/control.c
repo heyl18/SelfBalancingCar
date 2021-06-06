@@ -69,6 +69,7 @@ float g_fCarAngle;         	//
 float g_fGyroAngleSpeed;		//     			
 float g_fGravityAngle;			//
 float g_fYawAngle;
+float g_fDx;
 
 int g_iLeftTurnRoundCnt = 0;
 int g_iRightTurnRoundCnt = 0;
@@ -86,40 +87,169 @@ static int AbnormalSpinFlag = 0;
 ** 输　  出:   
 ** 备    注: 
 ********************喵呜实验室MiaowLabs版权所有**************************/
+int step = 0;
+int mytimestamp = 0;
+float beginAngle = 0;
+int turnOrMove = 0;
+int forward_cnt = 3;
+
+void fixYaw(){
+	if(g_fYawAngle < -1){
+		Steer(-1, 0);
+	}
+	else if(g_fYawAngle > 1){
+		Steer(1, 0);
+	}
+	else{
+		Steer(0, 0);
+	}
+}
+
+void standAlone(){
+	Steer(0, 0);
+}
+
+void forward(){
+	if(g_fYawAngle < -10){
+		Steer(-4, 3);
+	}
+	else if(g_fYawAngle < -5){
+		Steer(-2, 4);
+	}
+	else if(g_fYawAngle < -1){
+		Steer(-1, 5);
+	}
+	else if(g_fYawAngle > 1){
+		Steer(1, 5);
+	}
+	else if(g_fYawAngle > 5){
+		Steer(2, 4);
+	}
+	else if(g_fYawAngle > 10){
+		Steer(4, 3);
+	}
+	else{	
+		Steer(0, 6);
+	}
+}
+
+void back(){
+	if(g_fYawAngle < -10){
+		Steer(-4, -3);
+	}
+	else if(g_fYawAngle < -5){
+		Steer(-2, -4);
+	}
+	else if(g_fYawAngle < -1){
+		Steer(-1, -5);
+	}
+	else if(g_fYawAngle > 1){
+		Steer(1, -5);
+	}
+	else if(g_fYawAngle > 5){
+		Steer(2, -4);
+	}
+	else if(g_fYawAngle > 10){
+		Steer(4, -3);
+	}
+	else{	
+		Steer(0, -6);
+	}
+}
+
+void wait(int timeCnt){
+	if( g_RunTime - mytimestamp <= timeCnt){
+		standAlone();
+	}
+	else{
+		step += 1;
+		beginAngle = g_fYawAngle;
+		turnOrMove = 0;
+	}
+}
+
+
+
+void turnLeft(float turnAngle){
+	if(g_fYawAngle < beginAngle + turnAngle){
+		if(turnOrMove == 0){
+			Steer(-3, 4);
+			turnOrMove ++;
+		}
+		else{
+			Steer(0, 4);
+			turnOrMove ++;
+		}
+		if(turnOrMove >= forward_cnt){
+			turnOrMove = 0;
+		}
+	}
+	else{	
+		Steer(0, 0);
+		step += 1;
+		mytimestamp = g_RunTime;
+	}
+}
+
+void turnRight(float turnAngle){
+	if(g_fYawAngle > beginAngle - turnAngle){
+		if(turnOrMove == 0){
+			Steer(3, 4);
+			turnOrMove ++;
+		}
+		else{
+			Steer(0, 4);
+			turnOrMove ++;
+		}
+		if(turnOrMove >= forward_cnt){
+			turnOrMove = 0;
+		}
+	}
+	else{	
+		Steer(0, 0);
+		step += 1;
+		mytimestamp = g_RunTime;
+	}
+}
+
 void UltraControl(int mode) // 每隔20ms 执行一次
 {	
 	if(mode == 2){
-		if(g_RunTime <= 5){
-			if(g_fYawAngle < -10){
-				Steer(-4, 3);
+		if(step == 0 && (g_iLeftTurnRoundCnt + g_iRightTurnRoundCnt) / 2 < -7735){
+			step += 1; // 前进且到达目的地
+			mytimestamp = g_RunTime;
+			return;
+		}
+		if(step == 0){ // 前进
+			forward();
+		}
+		else if(step == 1){// 原地等待2秒
+			wait(2);
+		}
+		else if(step == 2){ // 等待一秒后开始后退
+			if( (g_iLeftTurnRoundCnt + g_iRightTurnRoundCnt) / 2 < 0){
+				back();
 			}
-			else if(g_fYawAngle < -5){
-				Steer(-2, 3);
-			}
-			else if(g_fYawAngle < -1){
-				Steer(-1, 3);
-			}
-			else if(g_fYawAngle > 1){
-				Steer(1, 3);
-			}
-			else if(g_fYawAngle > 5){
-				Steer(2, 3);
-			}
-			else if(g_fYawAngle > 10){
-				Steer(4, 3);
-			}
-			else{	
-				Steer(0, 3);
+			else{
+				step += 1;
+				mytimestamp = g_RunTime;
+				return;
 			}
 		}
-		else{
-			if(g_fYawAngle < -1){
-				Steer(-1, 0);
-			}
-			else if(g_fYawAngle > 1){
-				Steer(1, 0);
-			}
-			Steer(0, 0);
+		else if(step == 3){// 原地等待2秒
+			wait(2);
+		}
+		else if(step == 4){
+			turnLeft(135.0);
+		}
+		else if(step == 5){
+			wait(2);
+		}
+		else if(step == 6){
+			turnRight(135.0);
+		}
+		else if(step == 7){
+			standAlone();
 		}
 	}
 	else if(mode == 0)
@@ -267,7 +397,7 @@ void CarUpstandInit(void)
 	g_fGyroAngleSpeed = 0;
 	g_fGravityAngle   = 0;
 	g_fYawAngle = 0;
-
+	g_fDx = 0;
 
 	g_fAngleControlOut = g_fSpeedControlOut = g_fBluetoothDirectionOut = 0;
 	g_fLeftMotorOut    = g_fRightMotorOut   = 0;
@@ -439,7 +569,8 @@ void AngleCalculate(void)
 	//-------互补滤波---------------
 	g_fCarAngle = 0.98 * (g_fCarAngle + g_fGyroAngleSpeed * 0.005) + 0.02 *	g_fGravityAngle;
 
-	// 角速度积分计算yaw, 2.55为修正
+	// 角速度积分计算yaw, GYRO_Z_OFFSET为修正
+	//g_fYawAngle = g_fGyro_z / GYRO_SENSITIVITY;
 	g_fYawAngle += (g_fGyro_z / GYRO_SENSITIVITY + GYRO_Z_OFFSET)*0.005;
 }
 
@@ -482,7 +613,7 @@ void SpeedControl(void)
 	
 	
 	g_fCarSpeed = (g_s32LeftMotorPulseSigma  + g_s32RightMotorPulseSigma ) * 0.5 ;
-  g_s32LeftMotorPulseSigma = g_s32RightMotorPulseSigma = 0;	  //全局变量 注意及时清零
+    g_s32LeftMotorPulseSigma = g_s32RightMotorPulseSigma = 0;	  //全局变量 注意及时清零
     	
 	g_fCarSpeed = 0.7 * g_fCarSpeedOld + 0.3 * g_fCarSpeed ;//低通滤波，使速度更平滑
 	g_fCarSpeedOld = g_fCarSpeed;
@@ -491,7 +622,7 @@ void SpeedControl(void)
 	fDelta -= g_fCarSpeed;   
 	
 	fP = fDelta * (g_tCarSpeedPID.P);
-  fI = fDelta * (g_tCarSpeedPID.I/10.0);
+    fI = fDelta * (g_tCarSpeedPID.I/10.0);
 
 	g_fCarPosition += fI;
 	g_fCarPosition += g_fBluetoothSpeed;	  

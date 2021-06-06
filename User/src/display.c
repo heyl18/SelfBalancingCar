@@ -82,7 +82,7 @@ void ShowHomePage(void)
 		OLED_ShowString(0, 5, buff);		
 	}
 	if(step == 6){
-		snprintf((char*)buff, 21,  "RunTime:  %d(s)      ", g_RunTime);
+		snprintf((char*)buff, 21,  "Runtime:  %d(s)      ", g_RunTime);
 		OLED_ShowString(0, 6, buff);
 	}
 }
