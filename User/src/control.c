@@ -91,7 +91,7 @@ int step = 0;
 int mytimestamp = 0;
 float beginAngle = 0;
 int turnOrMove = 0;
-int forward_cnt = 3;
+int forward_cnt = 4;
 
 void fixYaw(){
 	if(g_fYawAngle < -1){
