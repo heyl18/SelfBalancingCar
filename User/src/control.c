@@ -65,36 +65,37 @@ float g_fBluetoothDirectionOld;
 float g_fBluetoothDirectionNew;
 float g_fBluetoothDirectionOut;
 
-float g_fCarAngle;         	//
+float g_fCarAngle;         	// 控制车身平衡
 float g_fGyroAngleSpeed;		//     			
-float g_fGravityAngle;			//
-float g_fYawAngle;
-float g_fDx;
+float g_fGravityAngle;			
+float g_fYawAngle;   // 偏航角
+float g_fDx; 
 
 int g_iLeftTurnRoundCnt = 0;
 int g_iRightTurnRoundCnt = 0;
 
 static int AbnormalSpinFlag = 0;
 
-/***************************************************************
-** 作　  者: Songyibiao
-** 官    网：http://www.miaowlabs.com
-** 淘    宝：https://miaowlabs.taobao.com/
-** 日　  期: 20160415
-** 函数名称: UltraControl
-** 功能描述: 超声波跟随/避障           
-** 输　  入:   
-** 输　  出:   
-** 备    注: 
-********************喵呜实验室MiaowLabs版权所有**************************/
-int step = 0;
-int mytimestamp = 0;
-float beginAngle = 0;
-int turnOrMove = 0;
-int forward_cnt = 3;
-int stopCar = 1;
+#define TURNING_LEFT 1
+#define TURNING_RIGHT -1
+#define MOVING_FORWARD 0
+#define MOVING_LEFT 1
+#define MOVING_RIGHT -2
 
-void fixYaw(){
+#define ENDING_TAILING_THRESH 7
+
+int step = 0; // 当前程序行进到第几步
+int g_iMytimestamp = 0; // 用于判断程序状态的时间戳
+float beginAngle = 0; // 转向前设置，记录开始转向前的角度
+int turnOrMove = 0; // 行进转向的记录
+int forward_cnt = 3; // 行进转向的记录
+int MovingCar = 1; // 是否停车，为0则停
+int lastTurn = 0; // 记录上次转向
+int direct = 0; // 0朝前
+int isTurn = 0; // 记录是否正在转弯，1为正在转弯
+int directZeroCnt = 0; // 连续朝0方向前进的次数
+
+void fixYaw(){// 控制电机，原地调整车头到初始方向
 	if(g_fYawAngle < -1){
 		Steer(-1, 0);
 	}
@@ -106,11 +107,11 @@ void fixYaw(){
 	}
 }
 
-void standAlone(){
+void makeSelfBanlance(){ // 控制小车原地站立
 	Steer(0, 0);
 }
 
-void forward(){
+void forward(){ // 朝着初始角度前进
 	if(g_fYawAngle < -10){
 		Steer(-4, 3);
 	}
@@ -133,7 +134,7 @@ void forward(){
 		Steer(0, 6);
 	}
 }
-void moveForward(float a){
+void moveForward(float a){ // 朝着角度a前进,a大于0为朝初始角的左边，小于0为右边
 	if(g_fYawAngle < -10 + a){
 		Steer(-4, 3);
 	}
@@ -156,7 +157,7 @@ void moveForward(float a){
 		Steer(0, 6);
 	}
 }
-void back(){
+void back(){ // 朝着初始角度后退
 	if(g_fYawAngle < -10){
 		Steer(-4, -3);
 	}
@@ -180,9 +181,14 @@ void back(){
 	}
 }
 
+/*
+	原地罚站timeCnt秒，正常情况应当20ms调用一次
+		输入：timeCnt （第一次调用前需要更新g_iMytimestamp）
+		输出：step加1，beginAngle更新，将turnOrMove置0
+*/
 void wait(int timeCnt){
-	if( g_RunTime - mytimestamp <= timeCnt){
-		standAlone();
+	if( g_RunTime - g_iMytimestamp <= timeCnt){
+		makeSelfBanlance();
 	}
 	else{
 		step += 1;
@@ -192,8 +198,11 @@ void wait(int timeCnt){
 }
 
 
-
-void turnLeft(float turnAngle){
+/*
+朝着左边转弯turnAngle度，边转弯边朝前,第一次调用前更新beginAngle
+20ms调用一次，转一次前进forward_cnt次
+*/
+void turnLeft(float turnAngle){ 
 	if(g_fYawAngle < beginAngle + turnAngle){
 		if(turnOrMove == 0){
 			Steer(-3, 4);
@@ -210,10 +219,14 @@ void turnLeft(float turnAngle){
 	else{	
 		Steer(0, 0);
 		step += 1;
-		mytimestamp = g_RunTime;
+		g_iMytimestamp = g_RunTime;
 	}
 }
 
+/*
+朝着右边转弯turnAngle度，边转弯边朝前,第一次调用前更新beginAngle
+20ms调用一次，转一次前进forward_cnt次
+*/
 void turnRight(float turnAngle){
 	if(g_fYawAngle > beginAngle - turnAngle){
 		if(turnOrMove == 0){
@@ -231,13 +244,14 @@ void turnRight(float turnAngle){
 	else{	
 		Steer(0, 0);
 		step += 1;
-		mytimestamp = g_RunTime;
+		g_iMytimestamp = g_RunTime;
 	}
 }
 
-int lastTurn = 0;
-int direct = 0;
-int isTurn = 0;
+/*
+朝着左边转弯turnAngle度,第一次调用前更新beginAngle，20ms调用一次
+转完之后将isTurn更新为0
+*/
 void realTurnLeft(float turnAngle){
 	if(g_fYawAngle < beginAngle + turnAngle){
 		Steer(-5,0);
@@ -248,6 +262,10 @@ void realTurnLeft(float turnAngle){
 	}
 }
 
+/*
+朝着右边转弯turnAngle度,第一次调用前更新beginAngle，20ms调用一次
+转完之后将isTurn更新为0
+*/
 void realTurnRight(float turnAngle){
 	if(g_fYawAngle > beginAngle - turnAngle){
 		Steer(5,0);
@@ -258,14 +276,15 @@ void realTurnRight(float turnAngle){
 	}
 }
 
-int directZeroCnt = 0;
-int a = 0, b = 0 ,c = 0 , d= 0;
+
+int a = 0, b = 0 ,c = 0 , d= 0;// 记录红外传感器测量结果
+
 void UltraControl(int mode) // 每隔20ms 执行一次
 {	
-	if(mode == 2){
+	if(mode == 2){// 任务一
 		if(step == 0 && (g_iLeftTurnRoundCnt + g_iRightTurnRoundCnt) / 2 < -7735){
 			step += 1; // 前进且到达目的地
-			mytimestamp = g_RunTime;
+			g_iMytimestamp = g_RunTime; // 打上时间戳调用wait
 			return;
 		}
 		if(step == 0){ // 前进
@@ -279,100 +298,74 @@ void UltraControl(int mode) // 每隔20ms 执行一次
 				back();
 			}
 			else{
-				step += 1;
-				mytimestamp = g_RunTime;
+				step += 1; // 后退完成
+				g_iMytimestamp = g_RunTime; // 打上时间戳调用wait
 				return;
 			}
 		}
-		else if(step == 3){// 原地等待2秒
+		else if(step == 3){// 原地等待2秒，wait执行完会使step++，beginAngle更新
 			wait(2);
 		}
-		else if(step == 4){
+		else if(step == 4){// 左转135度
 			turnLeft(135.0);
 		}
-		else if(step == 5){
+		else if(step == 5){// 原地等待2秒，wait执行完会使step++，beginAngle更新
 			wait(2);
 		}
-		else if(step == 6){
+		else if(step == 6){// 右转135度
 			turnRight(135.0);
 		}
-		else if(step == 7){
-			standAlone();
+		else if(step == 7){// 所有任务完成，原地挂机
+			makeSelfBanlance();
 		}
 	}
-	else if(mode == 0)
-	{
-		if((Distance >= 0) && (Distance<= 12))
-		{//距离小于12cm则后退
-			Steer(0, -4);
-		}
-		else if((Distance> 18) && (Distance<= 30))	
-		{//距离大于18cm且小于30则前进
-			Steer(0, 4);
-		}
-		else
-			Steer(0, 0);
-	}
-	else if(mode == 1)
-	{
-		if((Distance >= 0) && (Distance<= 20))
-		{//右转750个脉冲计数，转弯角度约为90度
-			Steer(5, 0);
-			g_iLeftTurnRoundCnt = 750;
-			g_iRightTurnRoundCnt = -750;
-		}
-		if((g_iLeftTurnRoundCnt < 0)&&(g_iRightTurnRoundCnt > 0))
-		{
-			Steer(0, 4);
-		}
-	}
-	else if(mode == 3){
-		if(stopCar == 1){
-			if(directZeroCnt >= 8){
-				stopCar = 0;
-				fixYaw();
-				step++;
+	else if(mode == 3){// 红外避障模式
+		if(MovingCar == 1){ // 巡线阶段
+			if(directZeroCnt >= 8){ // 走到最后一段直线了
+				MovingCar = 0; // 退出巡线模式
+				fixYaw(); // 调整车头
+				step++; // 走到下一步
 			}
-			else{
+			else{ // 还没到最后的直线，继续巡线
 				TailingControl();
 			}
 		}
-		if(step == 2){
+		if(step == 2){// 所有任务完成，原地挂机，调整车头
 			fixYaw();
 		}
-		else if(step == 1){
-			if(isTurn){
-				if(lastTurn == 1){
-					realTurnLeft(90);
+		else if(step == 1){// 避障前进模式
+			if(isTurn){ // 正在转弯
+				if(lastTurn == TURNING_LEFT){
+					realTurnLeft(90); // 左转90
 				}
 				else{
-					realTurnRight(90);
+					realTurnRight(90); // 右转90
 				}
 			}
-			else if(Distance <= 20){
-				beginAngle = g_fYawAngle;
-				isTurn = 1;
-				if(direct == 0){
-					if(lastTurn == 1){ //上次是左转
-						direct = 1;
-						lastTurn = 1;
+			else if(Distance <= 20){ // 遇到障碍
+				beginAngle = g_fYawAngle; // 初始化
+				isTurn = 1; // 开启转弯模式
+				if(direct == MOVING_FORWARD){
+					if(lastTurn == TURNING_LEFT){ // 现在朝前遇到障碍，上次是左转，说明还要左转（策略为遇到障碍先右转走U型）
+						direct = MOVING_LEFT;  // 更新车头朝向
+						lastTurn = TURNING_LEFT; // 更新上次转向
 					}
-					else{
-						direct = -1;
-						lastTurn = -1;
+					else{ // 现在朝前遇到障碍，上次是右转，继续右转
+						direct = MOVING_RIGHT;
+						lastTurn = TURNING_RIGHT;
 					}
 				}
-				else if(direct == 1){ // 现在朝左，右转转到先前
-					direct = 0;
-					lastTurn = -1;
+				else if(direct == MOVING_LEFT){ // 现在朝左，右转转到向前
+					direct = MOVING_FORWARD;
+					lastTurn = TURNING_RIGHT;
 				}
-				else if(direct == -1){ // 现在朝右，左转转到先前
-					direct = 0; 
-					lastTurn = 1;
+				else if(direct == -1){ // 现在朝右，左转转到向前
+					direct = MOVING_FORWARD; 
+					lastTurn = TURNING_LEFT;
 				}
 			}
-			else if(direct == 0){
-				forward();
+			else if(direct == 0){ // 没有障碍且向前
+				forward(); // 一边走一边修正角度
 				char result = InfraredDetect();
 				if(a == 0){
 					a = result & infrared_channel_La;
@@ -386,15 +379,14 @@ void UltraControl(int mode) // 每隔20ms 执行一次
 				if(d == 0){
 					d = result & infrared_channel_Rb;
 				}
-				if(a && b && c && d){
-					step++;
+				if(a && b && c && d) { // 四个都检测到了黑线
+					step++; // 进入停车区
 				}
-			
 			}
-			else if(direct == 1){// 左
+			else if(direct == MOVING_LEFT){ // 没有障碍且向左
 				moveForward(90);
 			}
-			else if(direct == -1){// 右
+			else if(direct == MOVING_RIGHT){// 没有障碍且向右
 				moveForward(-90);
 			}
 		}
@@ -691,8 +683,7 @@ void AngleCalculate(void)
 	//-------互补滤波---------------
 	g_fCarAngle = 0.98 * (g_fCarAngle + g_fGyroAngleSpeed * 0.005) + 0.02 *	g_fGravityAngle;
 
-	// 角速度积分计算yaw, GYRO_Z_OFFSET为修正
-	//g_fYawAngle = g_fGyro_z / GYRO_SENSITIVITY;
+	// 角速度积分计算yaw, GYRO_Z_OFFSET为修正 g_fYawAngle = g_fGyro_z / GYRO_SENSITIVITY;
 	g_fYawAngle += (g_fGyro_z / GYRO_SENSITIVITY + GYRO_Z_OFFSET)*0.005;
 }
 
@@ -857,7 +848,7 @@ void TailingControl(void)
 		direct = 4;
 	else
 		direct = 0;
-	if(g_RunTime > 7){
+	if(g_RunTime > ENDING_TAILING_THRESH){// 巡线最后一段直线检测，等过了x秒开始
 		if(direct == 0){
 			directZeroCnt ++;
 		}
