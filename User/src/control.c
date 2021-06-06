@@ -277,7 +277,7 @@ void realTurnRight(float turnAngle){
 }
 
 
-int a = 0, b = 0 ,c = 0 , d= 0;// 记录红外传感器测量结果
+char detected = 0x01 | (0x01 << 1) | 0x01 << 2 | 0x01 << 3;// 记录红外传感器测量是否是四个1
 
 void UltraControl(int mode) // 每隔20ms 执行一次
 {	
@@ -366,20 +366,9 @@ void UltraControl(int mode) // 每隔20ms 执行一次
 			}
 			else if(direct == 0){ // 没有障碍且向前
 				forward(); // 一边走一边修正角度
-				char result = InfraredDetect();
-				if(a == 0){
-					a = result & infrared_channel_La;
-				}
-				if(b == 0){
-					b = result & infrared_channel_Lb;
-				}
-				if(c == 0){
-					c = result & infrared_channel_Rb;
-				}
-				if(d == 0){
-					d = result & infrared_channel_Rb;
-				}
-				if(a && b && c && d) { // 四个都检测到了黑线
+				char result;
+				result  = InfraredDetectAll();
+				if(result == detected) { // 四个都检测到了黑线
 					step++; // 进入停车区
 				}
 			}
@@ -834,16 +823,12 @@ void TailingControl(void)
 	float speed = 0;
 
 	result = InfraredDetect();
-	if(result & infrared_channel_Lc)
+	if(result & infrared_channel_Lb)
 		direct = -10;
-	else if(result & infrared_channel_Lb)
-		direct = -6;
 	else if(result & infrared_channel_La)
 		direct = -4;
-	else if(result & infrared_channel_Rc)
-		direct = 10;
 	else if(result & infrared_channel_Rb)
-		direct = 6;
+		direct = 10;
 	else if(result & infrared_channel_Ra)
 		direct = 4;
 	else

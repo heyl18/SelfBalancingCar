@@ -16,11 +16,9 @@
 
 
 #define La GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_5)
-//#define Lb GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_4)
-#define Lc GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_3)
+#define Lb GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_3)
 #define Ra GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_15)
-//#define Rb GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_12)
-#define Rc GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_8)
+#define Rb GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_8)
 
 void InfraredIOInit(void)
 {
@@ -32,11 +30,11 @@ void InfraredIOInit(void)
 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; //PB0 ??
 
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_8 | GPIO_Pin_15;
+	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_8 | GPIO_Pin_15; // Ra 和 Rb 使用pin8和pin15
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_3 | GPIO_Pin_5;
+	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_3 | GPIO_Pin_5; // La 和 Lb 使用pin3和pin5
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 }
 
@@ -49,18 +47,29 @@ char InfraredDetect(void)
 {
 	char resut = 0;
 
-	if(Lc)
-		resut |= infrared_channel_Lc;
-//	else if(Lb)
-//		resut |= infrared_channel_Lb;
+	if(Lb)
+		resut |= infrared_channel_Lb;
 	else if(La)
 		resut |= infrared_channel_La;
 	else if(Ra)
 		resut |= infrared_channel_Ra;
-//	else if(Rb)
-//		resut |= infrared_channel_Rb;
-	else if(Rc)
-		resut |= infrared_channel_Rc;
+	else if(Rb)
+		resut |= infrared_channel_Rb;
+
+	return resut;
+}
+
+char InfraredDetectAll(void){
+	char resut = 0;
+
+	if(Lb)
+		resut |= infrared_channel_Lb;
+	if(La)
+		resut |= infrared_channel_La;
+	if(Ra)
+		resut |= infrared_channel_Ra;
+	if(Rb)
+		resut |= infrared_channel_Rb;
 
 	return resut;
 }
@@ -70,11 +79,9 @@ void InfrareSelfCheck(void)
 {
 		char cnt = 0;
 		if(La==1)cnt++;
-//		if(Lb==1)cnt++;
-		if(Lc==1)cnt++;
+		if(Lb==1)cnt++;
 		if(Ra==1)cnt++;
-//		if(Rb==1)cnt++;
-		if(Rc==1)cnt++;
+		if(Rb==1)cnt++;
 
 		if(cnt == 4)// 如果每个通道都是高电平，则判断为红外模块没有接上
 			InfrareError = 1;
