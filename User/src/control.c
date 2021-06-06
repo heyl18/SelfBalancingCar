@@ -95,6 +95,15 @@ int direct = 0; // 0朝前
 int isTurn = 0; // 记录是否正在转弯，1为正在转弯
 int directZeroCnt = 0; // 连续朝0方向前进的次数
 
+char detected = 0x01 | (0x01 << 1) | 0x01 << 2 | 0x01 << 3;// 记录红外传感器测量是否是四个1
+int stopDetect(){
+	char fraredresult  = InfraredDetectAll(); // 记录红外数据
+	if(fraredresult == detected){
+		return 1;
+	}
+	return 0;
+}
+
 void fixYaw(){// 控制电机，原地调整车头到初始方向
 	if(g_fYawAngle < -1){
 		Steer(-1, 0);
@@ -277,7 +286,7 @@ void realTurnRight(float turnAngle){
 }
 
 
-char detected = 0x01 | (0x01 << 1) | 0x01 << 2 | 0x01 << 3;// 记录红外传感器测量是否是四个1
+
 
 void UltraControl(int mode) // 每隔20ms 执行一次
 {	
@@ -366,9 +375,7 @@ void UltraControl(int mode) // 每隔20ms 执行一次
 			}
 			else if(direct == 0){ // 没有障碍且向前
 				forward(); // 一边走一边修正角度
-				char result;
-				result  = InfraredDetectAll();
-				if(result == detected) { // 四个都检测到了黑线
+				if(stopDetect()) { // 四个都检测到了黑线
 					step++; // 进入停车区
 				}
 			}

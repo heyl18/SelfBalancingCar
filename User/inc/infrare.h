@@ -27,6 +27,7 @@ typedef enum _infrared_channel_t{
 
 void InfraredIOInit(void);
 char InfraredDetect(void);
+char InfraredDetectAll(void);
 void InfrareSelfCheck(void);
 int IsInfrareOK(void);
 
