@@ -1,12 +1,12 @@
 /**********************************************************************
-��Ȩ���У�	���ش��¿Ƽ���2017.
-��		����	http://www.miaowlabs.com
-��		����	https://shop275516297.taobao.com/
-�� �� ��: 	infrare.c
-��    ��:   ���ش���
-��		��:   3.00
-�������:   2017.03.01
-��		Ҫ: 	������ģ��
+版权所有：	喵呜创新科技，2017.
+官		网：	http://www.miaowlabs.com
+淘		宝：	https://shop275516297.taobao.com/
+文 件 名: 	infrare.c
+作    者:   喵呜创新
+版		本:   3.00
+完成日期:   2017.03.01
+概		要: 	红外检测模块
 
 
 ***********************************************************************/
@@ -27,8 +27,8 @@ void InfraredIOInit(void)
 
 	GPIO_InitTypeDef GPIO_InitStructure;
 
- 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);  //ʹ��GPIOBʱ��
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);  //ʹ��GPIOBʱ��
+ 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);  //使能GPIOB时钟
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);  //使能GPIOB时钟
 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; //PB0 ??
 
@@ -41,9 +41,9 @@ void InfraredIOInit(void)
 }
 
 /*
-	��ͨ������ģ��
-	result�Ӹ�λ����λ�ֱ��ʶͨ��Lb��La��Ra��Rb
-	��⵽���ߵ�ͨ����Ӧ��λ��1
+	四通道红外模块
+	result从高位到低位分别标识通道Lb、La、Ra、Rb
+	检测到黑线的通道相应的位置1
 */
 char InfraredDetect(void)
 {
@@ -76,7 +76,7 @@ void InfrareSelfCheck(void)
 //		if(Rb==1)cnt++;
 		if(Rc==1)cnt++;
 
-		if(cnt == 4)// ���ÿ��ͨ�����Ǹߵ�ƽ�����ж�Ϊ����ģ��û�н���
+		if(cnt == 4)// 如果每个通道都是高电平，则判断为红外模块没有接上
 			InfrareError = 1;
 }
 

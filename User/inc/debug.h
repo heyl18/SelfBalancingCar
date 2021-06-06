@@ -1,12 +1,12 @@
 /**********************************************************************
-°æÈ¨ËùÓÐ£º	ß÷ÎØ´´ÐÂ¿Æ¼¼£¬2017.
-¹Ù		Íø£º	http://www.miaowlabs.com
-ÌÔ		±¦£º	https://shop275516297.taobao.com/
-ÎÄ ¼þ Ãû: 	debug.h
-×÷    Õß:   ß÷ÎØÊµÑéÊÒ
-°æ		±¾:   3.00
-Íê³ÉÈÕÆÚ:   2017.03.01
-¸Å		Òª: 	
+ç‰ˆæƒæ‰€æœ‰ï¼š	å–µå‘œåˆ›æ–°ç§‘æŠ€ï¼Œ2017.
+å®˜		ç½‘ï¼š	http://www.miaowlabs.com
+æ·˜		å®ï¼š	https://shop275516297.taobao.com/
+æ–‡ ä»¶ å: 	debug.h
+ä½œ    è€…:   å–µå‘œå®žéªŒå®¤
+ç‰ˆ		æœ¬:   3.00
+å®Œæˆæ—¥æœŸ:   2017.03.01
+æ¦‚		è¦: 	
 
 
 
@@ -20,11 +20,11 @@
 #define DEBUG_EN				1
 
 
-#define IMU_SCOPE_EN						0	// Ê¹ÄÜÊä³öÄ£ÄâÊ¾²¨Æ÷µ÷ÊÔÐÅÏ¢
-#define IMU_FOURAXISMONITOR_EN	1	// Ê¹ÄÜÊä³öËÄÖáÄ£ÄâÆ÷µ÷ÊÔÐÅÏ¢
+#define IMU_SCOPE_EN						0	// ä½¿èƒ½è¾“å‡ºæ¨¡æ‹Ÿç¤ºæ³¢å™¨è°ƒè¯•ä¿¡æ¯
+#define IMU_FOURAXISMONITOR_EN	1	// ä½¿èƒ½è¾“å‡ºå››è½´æ¨¡æ‹Ÿå™¨è°ƒè¯•ä¿¡æ¯
 
-#define COMMUNICATE_DEBUG_EN		0	// Ê¹ÄÜÊä³öÀ¶ÑÀÍ¨ÐÅÐÅµ÷ÊÔÐÅÏ¢
-#define INFRARE_DEBUG_EN				1	// Ê¹ÄÜÊä³öºìÍâÑ°¼£µ÷ÊÔÐÅÏ¢
+#define COMMUNICATE_DEBUG_EN		0	// ä½¿èƒ½è¾“å‡ºè“ç‰™é€šä¿¡ä¿¡è°ƒè¯•ä¿¡æ¯
+#define INFRARE_DEBUG_EN				1	// ä½¿èƒ½è¾“å‡ºçº¢å¤–å¯»è¿¹è°ƒè¯•ä¿¡æ¯
 
 
 #if DEBUG_EN

@@ -1,12 +1,12 @@
 /**********************************************************************
-∞Ê»®À˘”–£∫	ﬂ˜Œÿ¥¥–¬ø∆ºº£¨2017.
-πŸ		Õ¯£∫	http://www.miaowlabs.com
-Ã‘		±¶£∫	https://miaowlabs.taobao.com/
-Œƒ º˛ √˚: 	display.c
-◊˜    ’ﬂ:   ﬂ˜Œÿ µ—È “
-∞Ê		±æ:   3.00
-ÕÍ≥…»’∆⁄:   2017.03.01
-∏≈		“™: 	
+ÁâàÊùÉÊâÄÊúâÔºö	ÂñµÂëúÂàõÊñ∞ÁßëÊäÄÔºå2017.
+ÂÆò		ÁΩëÔºö	http://www.miaowlabs.com
+Ê∑ò		ÂÆùÔºö	https://miaowlabs.taobao.com/
+Êñá ‰ª∂ Âêç: 	display.c
+‰Ωú    ËÄÖ:   ÂñµÂëúÂÆûÈ™åÂÆ§
+Áâà		Êú¨:   3.00
+ÂÆåÊàêÊó•Êúü:   2017.03.01
+Ê¶Ç		Ë¶Å: 	
 
 
 ***********************************************************************/
@@ -26,19 +26,19 @@ extern unsigned short BatVol;
 
 
 /*
-	œ‘ ælogo
+	ÊòæÁ§∫logo
 */
 void ShowHomePageInit(void)
 {
-	OLED_DrawBMP(0,0,128,8,LOGO);  //Õº∆¨œ‘ æ
+	OLED_DrawBMP(0,0,128,8,LOGO);  //ÂõæÁâáÊòæÁ§∫
 	delay_ms(1000);
 	OLED_Clear();
 }
 
 
 /*
-	oled÷˜“≥À¢–¬∫Ø ˝
-	∑÷¡˘≤ΩÀ¢–¬£¨±‹√‚“ª¥ŒÀ¢–¬ ±º‰π˝≥§
+	oled‰∏ªÈ°µÂà∑Êñ∞ÂáΩÊï∞
+	ÂàÜÂÖ≠Ê≠•Âà∑Êñ∞ÔºåÈÅøÂÖç‰∏ÄÊ¨°Âà∑Êñ∞Êó∂Èó¥ËøáÈïø
 */
 
 void ShowHomePage(void)
@@ -47,11 +47,12 @@ void ShowHomePage(void)
 	static char step = 0;
 
 	step++;
-	if(step >= 6)step = 0;
+	if(step > 6)step = 0;
 
-	//∑÷≤Ω÷¥––£¨Àı∂Ãµ•¥ŒÀ¢∆¡ ±º‰
+	//ÂàÜÊ≠•ÊâßË°åÔºåÁº©Áü≠ÂçïÊ¨°Âà∑Â±èÊó∂Èó¥
 	if(step == 0){
-		OLED_ShowString(0, 0, "Mode: Complementary  ");
+		snprintf((char*)buff, 21,  "Yaw Angle:  %0.1f       ", g_fYawAngle);
+		OLED_ShowString(0, 0, buff);
 	}
 
 	if(step == 1){
@@ -64,11 +65,11 @@ void ShowHomePage(void)
 	}
 
 	if(step == 2){
-		snprintf((char*)buff, 21,  "EncoLeft:  %d         ",g_s16LeftMotorPulse);
+		snprintf((char*)buff, 21,  "LeftRoundCnt:  %d         ",g_iLeftTurnRoundCnt);
 		OLED_ShowString(0, 2, buff);
 	}
 	if(step == 3){
-		snprintf((char*)buff, 21, "EncoRight: %d         ",g_s16RightMotorPulse);
+		snprintf((char*)buff, 21, "RightRoundCnt: %d         ",g_iRightTurnRoundCnt);
 		OLED_ShowString(0, 3, buff);
 	}
 	
@@ -79,7 +80,11 @@ void ShowHomePage(void)
 	if(step == 5){
 		snprintf((char*)buff, 21, "Battery:   %0.1f(V)      ", g_BatVolt/100.0);
 		OLED_ShowString(0, 5, buff);		
-		}
+	}
+	if(step == 6){
+		snprintf((char*)buff, 21,  "RunTime:  %d(s)      ", g_RunTime);
+		OLED_ShowString(0, 6, buff);
+	}
 }
 
 

@@ -1,12 +1,12 @@
 /**********************************************************************
-°æÈ¨ËùÓĞ£º	ß÷ÎØ´´ĞÂ¿Æ¼¼£¬2017.
-¹Ù		Íø£º	http://www.miaowlabs.com
-ÌÔ		±¦£º	https://miaowlabs.taobao.com/
-ÎÄ ¼ş Ãû: 	MPU6050.c
-×÷    Õß:   ß÷ÎØÊµÑéÊÒ
-°æ		±¾:   3.00
-Íê³ÉÈÕÆÚ:   2017.03.01
-¸Å		Òª: 	
+ç‰ˆæƒæ‰€æœ‰ï¼š	å–µå‘œåˆ›æ–°ç§‘æŠ€ï¼Œ2017.
+å®˜		ç½‘ï¼š	http://www.miaowlabs.com
+æ·˜		å®ï¼š	https://miaowlabs.taobao.com/
+æ–‡ ä»¶ å: 	MPU6050.c
+ä½œ    è€…:   å–µå‘œå®éªŒå®¤
+ç‰ˆ		æœ¬:   3.00
+å®Œæˆæ—¥æœŸ:   2017.03.01
+æ¦‚		è¦: 	
 
 
 ***********************************************************************/
@@ -14,13 +14,13 @@
 #include "I2C.h"
 
 /*
-* ¶¨ÒåMPU6050ÄÚ²¿µØÖ·
+* å®šä¹‰MPU6050å†…éƒ¨åœ°å€
 */
 #define MPU6050_ADDR  0x68
-#define	SMPLRT_DIV		0x19	//ÍÓÂİÒÇ²ÉÑùÂÊ£¬µäĞÍÖµ£º0x07(125Hz)
-#define	CONFIG				0x1A	//µÍÍ¨ÂË²¨ÆµÂÊ£¬µäĞÍÖµ£º0x06(5Hz)
-#define	GYRO_CONFIG		0x1B	//ÍÓÂİÒÇ×Ô¼ì¼°²âÁ¿·¶Î§£¬µäĞÍÖµ£º0x18(²»×Ô¼ì£¬2000deg/s)
-#define	ACCEL_CONFIG	0x1C	//¼ÓËÙ¼Æ×Ô¼ì¡¢²âÁ¿·¶Î§¼°¸ßÍ¨ÂË²¨ÆµÂÊ£¬µäĞÍÖµ£º0x01(²»×Ô¼ì£¬2G£¬5Hz)
+#define	SMPLRT_DIV		0x19	//é™€èºä»ªé‡‡æ ·ç‡ï¼Œå…¸å‹å€¼ï¼š0x07(125Hz)
+#define	CONFIG				0x1A	//ä½é€šæ»¤æ³¢é¢‘ç‡ï¼Œå…¸å‹å€¼ï¼š0x06(5Hz)
+#define	GYRO_CONFIG		0x1B	//é™€èºä»ªè‡ªæ£€åŠæµ‹é‡èŒƒå›´ï¼Œå…¸å‹å€¼ï¼š0x18(ä¸è‡ªæ£€ï¼Œ2000deg/s)
+#define	ACCEL_CONFIG	0x1C	//åŠ é€Ÿè®¡è‡ªæ£€ã€æµ‹é‡èŒƒå›´åŠé«˜é€šæ»¤æ³¢é¢‘ç‡ï¼Œå…¸å‹å€¼ï¼š0x01(ä¸è‡ªæ£€ï¼Œ2Gï¼Œ5Hz)
 #define	ACCEL_XOUT_H	0x3B
 #define	ACCEL_XOUT_L	0x3C
 #define	ACCEL_YOUT_H	0x3D
@@ -35,26 +35,26 @@
 #define	GYRO_YOUT_L		0x46
 #define	GYRO_ZOUT_H		0x47
 #define	GYRO_ZOUT_L		0x48
-#define	PWR_MGMT_1		0x6B	//µçÔ´¹ÜÀí£¬µäĞÍÖµ£º0x00(Õı³£ÆôÓÃ)
-#define	WHO_AM_I		0x75	//IICµØÖ·¼Ä´æÆ÷(Ä¬ÈÏÊıÖµ0x68£¬Ö»¶Á)
+#define	PWR_MGMT_1		0x6B	//ç”µæºç®¡ç†ï¼Œå…¸å‹å€¼ï¼š0x00(æ­£å¸¸å¯ç”¨)
+#define	WHO_AM_I		0x75	//IICåœ°å€å¯„å­˜å™¨(é»˜è®¤æ•°å€¼0x68ï¼Œåªè¯»)
 
 
 typedef enum _axis_t{x_Axis, y_Axis, z_Axis}axis_t;
 
-short g_fGyro_x,g_fAccel_y,g_fAccel_z;
+short g_fGyro_x,g_fAccel_y,g_fAccel_z,g_fGyro_z;
 
 void MPU6050_Init(void)
 {
 	unsigned char buff[5] = {0x00,0x07,0x04,0x18,0x01};
-	i2cwrite(MPU6050_ADDR,PWR_MGMT_1, 1,&buff[0]);   //½â³ıĞİÃß×´Ì¬
-	i2cwrite(MPU6050_ADDR,SMPLRT_DIV, 1,&buff[1])  ; //ÍÓÂİÒÇ125hz
+	i2cwrite(MPU6050_ADDR,PWR_MGMT_1, 1,&buff[0]);   //è§£é™¤ä¼‘çœ çŠ¶æ€
+	i2cwrite(MPU6050_ADDR,SMPLRT_DIV, 1,&buff[1])  ; //é™€èºä»ª125hz
 	i2cwrite(MPU6050_ADDR,CONFIG, 1,&buff[2])      ; //Accelerometer:21hz 8.5ms ; Gyroscope:20hz 8.3ms
-	i2cwrite(MPU6050_ADDR,GYRO_CONFIG, 1,&buff[3]) ; //¡À2000¡ã/s  
-	i2cwrite(MPU6050_ADDR,ACCEL_CONFIG, 1,&buff[4]); //¡À2g
+	i2cwrite(MPU6050_ADDR,GYRO_CONFIG, 1,&buff[3]) ; //Â±2000Â°/s  
+	i2cwrite(MPU6050_ADDR,ACCEL_CONFIG, 1,&buff[4]); //Â±2g
 }
 
 /*
-* ¶ÁÈ¡Ò»¸ö16Î»Êı¾İ
+* è¯»å–ä¸€ä¸ª16ä½æ•°æ®
 */
 short DataSynthesis(unsigned char REG_Address)	
 {
@@ -62,11 +62,11 @@ short DataSynthesis(unsigned char REG_Address)
 
 	i2cread(MPU6050_ADDR,REG_Address,2,uByte)  ;
 
-	return ((uByte[0] << 8) + uByte[1]);   /*·µ»ØºÏ³ÉÊı¾İ*/
+	return ((uByte[0] << 8) + uByte[1]);   /*è¿”å›åˆæˆæ•°æ®*/
 }
 
 /*
-* ¶ÁÈ¡¼ÓËÙ¶ÈÊı¾İ
+* è¯»å–åŠ é€Ÿåº¦æ•°æ®
 */
 short ReadAcceData(axis_t  axis)
 {
@@ -83,7 +83,7 @@ short ReadAcceData(axis_t  axis)
 }
 
 /*
-* ¶ÁÈ¡ÍÓÂİÒÇ½ÇËÙ¶ÈÊı¾İ
+* è¯»å–é™€èºä»ªè§’é€Ÿåº¦æ•°æ®
 */
 short ReadGyroData(axis_t  axis)
 {
@@ -101,9 +101,10 @@ short ReadGyroData(axis_t  axis)
 
 void MPU6050_Pose(void)
 {	
-	g_fGyro_x = ReadGyroData(x_Axis); //ÍÓÂİÒÇxÖá
-	g_fAccel_y = ReadAcceData(y_Axis); //¼ÓËÙ¶ÈyÖá 
-		g_fAccel_z = ReadAcceData(z_Axis); //¼ÓËÙ¶ÈzÖá
+	g_fGyro_x = ReadGyroData(x_Axis); //é™€èºä»ªxè½´
+	g_fGyro_z  = ReadGyroData(z_Axis); //é™€èºä»ªzè½´
+	g_fAccel_y = ReadAcceData(y_Axis); //åŠ é€Ÿåº¦yè½´ 
+	g_fAccel_z = ReadAcceData(z_Axis); //åŠ é€Ÿåº¦zè½´
 }
 
 

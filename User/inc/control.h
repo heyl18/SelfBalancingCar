@@ -11,28 +11,32 @@ typedef struct _PID_t{
 #define ACCEL_SENSITIVITY  16384.0
 #define GYRO_SENSITIVITY 16.4
 #define M_PI 3.14159265359
-#define    GYRO_OFFSET      0          //ÍÓÂİÒÇÁãµãÆ«ÒÆÖµ
+#define    GYRO_OFFSET      0          //é™€èºä»ªé›¶ç‚¹åç§»å€¼
+#define GYRO_Z_OFFSET 2.55 //é™€èºä»ªzè½´é›¶ç‚¹åç§»å€¼
 //#define 	 GRAVITY_OFFSET   (g_iGravity_Offset)      			//
 #define    CAR_ZERO_ANGLE   (2)
 #define CAR_ANGLE_SET 0
 #define CAR_ANGLE_SPEED_SET 0
-/******ËÙ¶È¿ØÖÆÏà¹Øºê¶¨Òå******/
+/******é€Ÿåº¦æ§åˆ¶ç›¸å…³å®å®šä¹‰******/
 #define CAR_POSITION_SET      0
 #define CAR_SPEED_SET         g_iCarSpeedSet
 #define MOTOR_LEFT_SPEED_POSITIVE  (g_fLeftMotorOut >0)
 #define MOTOR_RIGHT_SPEED_POSITIVE (g_fRightMotorOut>0)
-#define SPEED_CONTROL_PERIOD	 25	    //ËÙ¶È»·¿ØÖÆÖÜÆÚ
+#define SPEED_CONTROL_PERIOD	 25	    //é€Ÿåº¦ç¯æ§åˆ¶å‘¨æœŸ
 #define CAR_SPEED_CONSTANT		(1000.0/(float)SPEED_CONTROL_PERIOD/(float)OPTICAL_ENCODE_CONSTANT)
 #define CAR_POSITION_MAX	700
 #define CAR_POSITION_MIN	(-900)
-/******µç»ú¿ØÖÆÏà¹Øºê¶¨Òå******/
-#define MOTOR_OUT_DEAD_VAL       0	   //ËÀÇøÖµ8
-#define MOTOR_OUT_MAX           999	   //Õ¼¿Õ±ÈÕı×î´óÖµ
-#define MOTOR_OUT_MIN         (-999)   //Õ¼¿Õ±È¸º×î´óÖµ
+/******ç”µæœºæ§åˆ¶ç›¸å…³å®å®šä¹‰******/
+#define MOTOR_OUT_DEAD_VAL       0	   //æ­»åŒºå€¼8
+#define MOTOR_OUT_MAX           999	   //å ç©ºæ¯”æ­£æœ€å¤§å€¼
+#define MOTOR_OUT_MIN         (-999)   //å ç©ºæ¯”è´Ÿæœ€å¤§å€¼
 
 
 extern short  g_s16LeftMotorPulse;
 extern short  g_s16RightMotorPulse;
+
+extern int g_iLeftTurnRoundCnt;
+extern int g_iRightTurnRoundCnt;
 
 extern int  g_s32LeftMotorPulseSigma;
 extern int  g_s32RightMotorPulseSigma;
@@ -42,6 +46,7 @@ extern int  g_iGravity_Offset;
 extern float g_fCarAngle;         		
 extern float g_fGyroAngleSpeed;		   			
 extern float g_fGravityAngle;			
+extern float g_fYawAngle; // yawè§’ï¼Œç”¨äºä¿®æ­£å°è½¦å‰è¿›æ–¹å‘
 
 extern PID_t g_tCarAnglePID;
 extern PID_t g_tCarSpeedPID;

@@ -1,12 +1,12 @@
 /**********************************************************************
-°æÈ¨ËùÓÐ£º	ß÷ÎØ´´ÐÂ¿Æ¼¼£¬2017.
-¹Ù		Íø£º	http://www.miaowlabs.com
-ÌÔ		±¦£º	https://shop275516297.taobao.com/
-ÎÄ ¼þ Ãû: 	mpu6050.h
-×÷    Õß:   ß÷ÎØÊµÑéÊÒ
-°æ		±¾:   3.00
-Íê³ÉÈÕÆÚ:   2017.03.01
-¸Å		Òª: 	
+ç‰ˆæƒæ‰€æœ‰ï¼š	å–µå‘œåˆ›æ–°ç§‘æŠ€ï¼Œ2017.
+å®˜		ç½‘ï¼š	http://www.miaowlabs.com
+æ·˜		å®ï¼š	https://shop275516297.taobao.com/
+æ–‡ ä»¶ å: 	mpu6050.h
+ä½œ    è€…:   å–µå‘œå®žéªŒå®¤
+ç‰ˆ		æœ¬:   3.00
+å®Œæˆæ—¥æœŸ:   2017.03.01
+æ¦‚		è¦: 	
 
 
 
@@ -16,6 +16,7 @@
 #define __MPU6050_H__
 
 extern short g_fGyro_x,g_fAccel_y,g_fAccel_z;
+extern short g_fGyro_z;
 
 void MPU6050_Init(void);
 void MPU6050_Pose(void);

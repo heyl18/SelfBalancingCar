@@ -1,12 +1,12 @@
 /**********************************************************************
-°æÈ¨ËùÓĞ£º	ß÷ÎØ´´ĞÂ¿Æ¼¼£¬2017.
-¹Ù		Íø£º	http://www.miaowlabs.com
-ÌÔ		±¦£º	https://shop275516297.taobao.com/
-ÎÄ ¼ş Ãû: 	ultrasonic.c
-×÷    Õß:   ß÷ÎØÊµÑéÊÒ
-°æ		±¾:   3.00
-Íê³ÉÈÕÆÚ:   2017.03.01
-¸Å		Òª: 	
+ç‰ˆæƒæ‰€æœ‰ï¼š	å–µå‘œåˆ›æ–°ç§‘æŠ€ï¼Œ2017.
+å®˜		ç½‘ï¼š	http://www.miaowlabs.com
+æ·˜		å®ï¼š	https://shop275516297.taobao.com/
+æ–‡ ä»¶ å: 	ultrasonic.c
+ä½œ    è€…:   å–µå‘œå®éªŒå®¤
+ç‰ˆ		æœ¬:   3.00
+å®Œæˆæ—¥æœŸ:   2017.03.01
+æ¦‚		è¦: 	
 
 
 ***********************************************************************/
@@ -18,19 +18,19 @@
 
 
 unsigned int TIM1CH4_CAPTURE_STA;
-//bit7:²¶»ñÍê³É±êÖ¾ 
-//bit6£º²¶»ñµ½¸ßµãÆ½±êÖ¾
-//bit5~0£º²¶»ñµ½¸ßµçÆ½ºó¶¨Ê±Æ÷Òç³öµÄ´ÎÊı
+//bit7:æ•è·å®Œæˆæ ‡å¿— 
+//bit6ï¼šæ•è·åˆ°é«˜ç‚¹å¹³æ ‡å¿—
+//bit5~0ï¼šæ•è·åˆ°é«˜ç”µå¹³åå®šæ—¶å™¨æº¢å‡ºçš„æ¬¡æ•°
 unsigned int TIM1CH4_CAPTURE_VAL;
 
-// ³¬Éù²¨¼ì²â¾àÀë£¬µ¥Î»cm
+// è¶…å£°æ³¢æ£€æµ‹è·ç¦»ï¼Œå•ä½cm
 int Distance = 0;
-// ³¬Éù²¨×Ô¼ì±êÊ¶£¬0--Ä£¿éÃ»²åÉÏ£¬1--Ä£¿éÕı³£
+// è¶…å£°æ³¢è‡ªæ£€æ ‡è¯†ï¼Œ0--æ¨¡å—æ²¡æ’ä¸Šï¼Œ1--æ¨¡å—æ­£å¸¸
 int UltraError = 0;
 
 
 /*
-	²¶»ñÄ£Ê½³õÊ¼»¯(³¬Éù²¨²â¾àÂö¿í²¶»ñ)
+	æ•è·æ¨¡å¼åˆå§‹åŒ–(è¶…å£°æ³¢æµ‹è·è„‰å®½æ•è·)
 */
 void TIM1_Cap_Init(void)	
 {	 
@@ -39,68 +39,68 @@ void TIM1_Cap_Init(void)
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
  	NVIC_InitTypeDef NVIC_InitStructure;
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);	//Ê¹ÄÜTIM1Ê±ÖÓ
- 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE); //Ê¹ÄÜGPIOAÊ±ÖÓ
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);	//ä½¿èƒ½TIM1æ—¶é’Ÿ
+ 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE); //ä½¿èƒ½GPIOAæ—¶é’Ÿ
 	
 	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_11; 
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 				//PA11 ÊäÈë  
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 				//PA11 è¾“å…¥  
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
 	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_2;     
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;     	//PA2Êä³ö 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;     	//PA2è¾“å‡º 
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;     	//2M
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
-	//³õÊ¼»¯¶¨Ê±Æ÷1 TIM1	 
-	TIM_TimeBaseStructure.TIM_Period = 0xFFFF; 						//Éè¶¨¼ÆÊıÆ÷×Ô¶¯ÖØ×°Öµ 
-	TIM_TimeBaseStructure.TIM_Prescaler =72-1; 						//Ô¤·ÖÆµÆ÷   
-	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //ÉèÖÃÊ±ÖÓ·Ö¸î:TDTS = Tck_tim
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIMÏòÉÏ¼ÆÊıÄ£Ê½
-	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure); 			//¸ù¾İTIM_TimeBaseInitStructÖĞÖ¸¶¨µÄ²ÎÊı³õÊ¼»¯TIMxµÄÊ±¼ä»ùÊıµ¥Î»
+	//åˆå§‹åŒ–å®šæ—¶å™¨1 TIM1	 
+	TIM_TimeBaseStructure.TIM_Period = 0xFFFF; 						//è®¾å®šè®¡æ•°å™¨è‡ªåŠ¨é‡è£…å€¼ 
+	TIM_TimeBaseStructure.TIM_Prescaler =72-1; 						//é¢„åˆ†é¢‘å™¨   
+	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //è®¾ç½®æ—¶é’Ÿåˆ†å‰²:TDTS = Tck_tim
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIMå‘ä¸Šè®¡æ•°æ¨¡å¼
+	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure); 			//æ ¹æ®TIM_TimeBaseInitStructä¸­æŒ‡å®šçš„å‚æ•°åˆå§‹åŒ–TIMxçš„æ—¶é—´åŸºæ•°å•ä½
   
-	//³õÊ¼»¯TIM1ÊäÈë²¶»ñ²ÎÊı
-	TIM_ICInitStructure.TIM_Channel = TIM_Channel_4; 			//CC1S=03 	Ñ¡ÔñÊäÈë¶Ë IC3Ó³Éäµ½TI1ÉÏ
-  TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;	//ÉÏÉıÑØ²¶»ñ
+	//åˆå§‹åŒ–TIM1è¾“å…¥æ•è·å‚æ•°
+	TIM_ICInitStructure.TIM_Channel = TIM_Channel_4; 			//CC1S=03 	é€‰æ‹©è¾“å…¥ç«¯ IC3æ˜ å°„åˆ°TI1ä¸Š
+  TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;	//ä¸Šå‡æ²¿æ•è·
   TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
-  TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;//ÅäÖÃÊäÈë·ÖÆµ,²»·ÖÆµ 
- 	TIM_ICInitStructure.TIM_ICFilter = 0x00;							//ÅäÖÃÊäÈëÂË²¨Æ÷ ²»ÂË²¨
+  TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;//é…ç½®è¾“å…¥åˆ†é¢‘,ä¸åˆ†é¢‘ 
+ 	TIM_ICInitStructure.TIM_ICFilter = 0x00;							//é…ç½®è¾“å…¥æ»¤æ³¢å™¨ ä¸æ»¤æ³¢
   TIM_ICInit(TIM1, &TIM_ICInitStructure);
 	
 
-	NVIC_InitStructure.NVIC_IRQChannel = TIM1_CC_IRQn|TIM1_UP_IRQn;  //TIM1ÖĞ¶Ï
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;  //ÏÈÕ¼ÓÅÏÈ¼¶2¼¶
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;  //´ÓÓÅÏÈ¼¶0¼¶
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQÍ¨µÀ±»Ê¹ÄÜ
-	NVIC_Init(&NVIC_InitStructure);  //¸ù¾İNVIC_InitStructÖĞÖ¸¶¨µÄ²ÎÊı³õÊ¼»¯ÍâÉèNVIC¼Ä´æÆ÷ 	
-	TIM_ITConfig(TIM1,TIM_IT_Update|TIM_IT_CC4,ENABLE);//ÔÊĞí¸üĞÂÖĞ¶Ï ,ÔÊĞíCC3IE²¶»ñÖĞ¶Ï	
- 	TIM_Cmd(TIM1,ENABLE ); 	//Ê¹ÄÜ¶¨Ê±Æ÷1
+	NVIC_InitStructure.NVIC_IRQChannel = TIM1_CC_IRQn|TIM1_UP_IRQn;  //TIM1ä¸­æ–­
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;  //å…ˆå ä¼˜å…ˆçº§2çº§
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;  //ä»ä¼˜å…ˆçº§0çº§
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQé€šé“è¢«ä½¿èƒ½
+	NVIC_Init(&NVIC_InitStructure);  //æ ¹æ®NVIC_InitStructä¸­æŒ‡å®šçš„å‚æ•°åˆå§‹åŒ–å¤–è®¾NVICå¯„å­˜å™¨ 	
+	TIM_ITConfig(TIM1,TIM_IT_Update|TIM_IT_CC4,ENABLE);//å…è®¸æ›´æ–°ä¸­æ–­ ,å…è®¸CC3IEæ•è·ä¸­æ–­	
+ 	TIM_Cmd(TIM1,ENABLE ); 	//ä½¿èƒ½å®šæ—¶å™¨1
 }
 
 /*
-	´¥·¢Ò»´Î³¬Éù²¨²â¾à£¬²¢¶ÁÈ¡ÉÏ´Î²âÁ¿½á¹û
+	è§¦å‘ä¸€æ¬¡è¶…å£°æ³¢æµ‹è·ï¼Œå¹¶è¯»å–ä¸Šæ¬¡æµ‹é‡ç»“æœ
 */
 void Read_Distane(void)
 {   
 	 GPIO_SetBits(GPIOA, GPIO_Pin_2);
 	 delay_us(20);  
 	 GPIO_ResetBits(GPIOA, GPIO_Pin_2);
-	if(TIM1CH4_CAPTURE_STA&0X80)//³É¹¦²¶»ñµ½ÁËÒ»´Î¸ßµçÆ½
+	if(TIM1CH4_CAPTURE_STA&0X80)//æˆåŠŸæ•è·åˆ°äº†ä¸€æ¬¡é«˜ç”µå¹³
 	{
 		Distance = TIM1CH4_CAPTURE_STA&0X3F;
-		Distance *= 65536;					 //Òç³öÊ±¼ä×ÜºÍ
-		Distance += TIM1CH4_CAPTURE_VAL;		//µÃµ½×ÜµÄ¸ßµçÆ½Ê±¼ä
-		Distance = Distance*170/10000;//³¬Éù²¨²â¾àÊÇ²âÁ¿Éù²¨·¢³öÈ¥ºÍ·´Éä»ØÀ´ÊÇÊ±¼ä¼ä¸ô£¬ÓÃÎ¢Ãî×öµ¥Î»¡£
-//¿ÕÆøÖĞµÄÉùËÙÊÇÃ¿Ãë340Ã×¡£Ò»Î¢ÃîÊ±¼äÉù²¨´«ÊäµÄ¾àÀëÊÇ340¡Á0.000001=0.00034Ã×=0.034ÀåÃ×£¬³ıÒÔ2¾ÍÊÇËù²â¾àÀë:0.017=1.7/100¡£Õâ¾ÍÊÇ1.7µÄÀ´Àú¡£
-		TIM1CH4_CAPTURE_STA=0;				//¿ªÆôÏÂÒ»´Î²¶»ñ
+		Distance *= 65536;					 //æº¢å‡ºæ—¶é—´æ€»å’Œ
+		Distance += TIM1CH4_CAPTURE_VAL;		//å¾—åˆ°æ€»çš„é«˜ç”µå¹³æ—¶é—´
+		Distance = Distance*170/10000;//è¶…å£°æ³¢æµ‹è·æ˜¯æµ‹é‡å£°æ³¢å‘å‡ºå»å’Œåå°„å›æ¥æ˜¯æ—¶é—´é—´éš”ï¼Œç”¨å¾®å¦™åšå•ä½ã€‚
+//ç©ºæ°”ä¸­çš„å£°é€Ÿæ˜¯æ¯ç§’340ç±³ã€‚ä¸€å¾®å¦™æ—¶é—´å£°æ³¢ä¼ è¾“çš„è·ç¦»æ˜¯340Ã—0.000001=0.00034ç±³=0.034å˜ç±³ï¼Œé™¤ä»¥2å°±æ˜¯æ‰€æµ‹è·ç¦»:0.017=1.7/100ã€‚è¿™å°±æ˜¯1.7çš„æ¥å†ã€‚
+		TIM1CH4_CAPTURE_STA=0;				//å¼€å¯ä¸‹ä¸€æ¬¡æ•è·
 	}				
 }
 
 /*
-	²¶»ñÖĞ¶Ï´¦Àíº¯Êı
+	æ•è·ä¸­æ–­å¤„ç†å‡½æ•°
 */
 void TIM1_CC_IRQHandler(void)
 { 		    		  			    
-	if((TIM1CH4_CAPTURE_STA&0X80)==0)//»¹Î´Íê³ÉÒ»´ÎÂö³å²¶»ñ	
+	if((TIM1CH4_CAPTURE_STA&0X80)==0)//è¿˜æœªå®Œæˆä¸€æ¬¡è„‰å†²æ•è·	
 	{	  
 		if (TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET)
 		{	    
@@ -114,19 +114,19 @@ void TIM1_CC_IRQHandler(void)
 				else TIM1CH4_CAPTURE_STA++;
 			}	 
 		}
-		if (TIM_GetITStatus(TIM1, TIM_IT_CC4) != RESET)//Í¨µÀ4²¶»ñµ½ÊÂ¼ş
+		if (TIM_GetITStatus(TIM1, TIM_IT_CC4) != RESET)//é€šé“4æ•è·åˆ°äº‹ä»¶
 		{	
 			if(TIM1CH4_CAPTURE_STA&0X40){	  			
-				TIM1CH4_CAPTURE_STA|=0X80;		//±ê¼ÇÒÑ¾­²¶»ñµ½ÏÂ½µÑØ
+				TIM1CH4_CAPTURE_STA|=0X80;		//æ ‡è®°å·²ç»æ•è·åˆ°ä¸‹é™æ²¿
 				TIM1CH4_CAPTURE_VAL=TIM_GetCapture4(TIM1);
-				TIM_OC4PolarityConfig(TIM1,TIM_ICPolarity_Rising); //ÉèÖÃÎªÉÏÉıÑØ²¶»ñ
+				TIM_OC4PolarityConfig(TIM1,TIM_ICPolarity_Rising); //è®¾ç½®ä¸ºä¸Šå‡æ²¿æ•è·
 			}
 			else{
 				TIM1CH4_CAPTURE_STA=0;			
 				TIM1CH4_CAPTURE_VAL=0;
 				TIM_SetCounter(TIM1,0);
-				TIM1CH4_CAPTURE_STA|=0X40;													//±ê¼ÇÒÑ¾­²¶»ñµ½ÉÏÉıÑØ
-				TIM_OC4PolarityConfig(TIM1,TIM_ICPolarity_Falling);	// ÉèÖÃÎªÏÂ½µÑØ²¶»ñ
+				TIM1CH4_CAPTURE_STA|=0X40;													//æ ‡è®°å·²ç»æ•è·åˆ°ä¸Šå‡æ²¿
+				TIM_OC4PolarityConfig(TIM1,TIM_ICPolarity_Falling);	// è®¾ç½®ä¸ºä¸‹é™æ²¿æ•è·
 			}		    
 		}			     	    					   
   }
@@ -134,11 +134,11 @@ void TIM1_CC_IRQHandler(void)
 }
 
 /*
-	Ä£¿é×Ô¼ì£¬ÓÃÓÚÉÏµçÊ±¼ì²â³¬Éù²¨Ä£¿éÊÇ·ñ²åÉÏ
+	æ¨¡å—è‡ªæ£€ï¼Œç”¨äºä¸Šç”µæ—¶æ£€æµ‹è¶…å£°æ³¢æ¨¡å—æ˜¯å¦æ’ä¸Š
 */
 void UltraSelfCheck(void)
 {
-	delay_ms(1000);//ĞÂ°æ³¬Éù²¨Ä£¿éÉÏµçÄÚ²¿³õÊ¼»¯ÒªµÈ1Ãë£¬ÏÈÑÓÊ±1Ãë
+	delay_ms(1000);//æ–°ç‰ˆè¶…å£°æ³¢æ¨¡å—ä¸Šç”µå†…éƒ¨åˆå§‹åŒ–è¦ç­‰1ç§’ï¼Œå…ˆå»¶æ—¶1ç§’
 	if(!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_11)){
 		delay_ms(50);
 		if(!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_11))

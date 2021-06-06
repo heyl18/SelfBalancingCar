@@ -1,12 +1,12 @@
 /**********************************************************************
-°æÈ¨ËùÓĞ£º	ß÷ÎØ´´ĞÂ¿Æ¼¼£¬2017.
-¹Ù		Íø£º	http://www.miaowlabs.com
-ÌÔ		±¦£º	https://shop275516297.taobao.com/
-ÎÄ ¼ş Ãû: 	usart.c
-×÷    Õß:   ß÷ÎØÊµÑéÊÒ
-°æ		±¾:   3.00
-Íê³ÉÈÕÆÚ:   2017.03.01
-¸Å		Òª: 	
+ç‰ˆæƒæ‰€æœ‰ï¼š	å–µå‘œåˆ›æ–°ç§‘æŠ€ï¼Œ2017.
+å®˜		ç½‘ï¼š	http://www.miaowlabs.com
+æ·˜		å®ï¼š	https://shop275516297.taobao.com/
+æ–‡ ä»¶ å: 	usart.c
+ä½œ    è€…:   å–µå‘œå®éªŒå®¤
+ç‰ˆ		æœ¬:   3.00
+å®Œæˆæ—¥æœŸ:   2017.03.01
+æ¦‚		è¦: 	
 
 
 ***********************************************************************/
@@ -17,13 +17,13 @@
 #include "misc.h"
 #include "motor.h"
 
-//À¶ÑÀÍ¨ĞÅ´®¿Ú½ÓÊÕ»º³åÇø
+//è“ç‰™é€šä¿¡ä¸²å£æ¥æ”¶ç¼“å†²åŒº
 char Uart3Buffer[Uart3BufferSize];
 unsigned char Uart3Index = 0;
 
 
 /*
-	µ÷ÊÔ´®¿Ú£¬115200bps
+	è°ƒè¯•ä¸²å£ï¼Œ115200bps
 */
 void USART1Init(void)
 {
@@ -56,25 +56,25 @@ void USART1Init(void)
 }
 
 /*
-		À¶ÑÀÍ¨ĞÅ´®¿Ú£¬baudrate£º0--9600bps¡¢1--115200bps
+		è“ç‰™é€šä¿¡ä¸²å£ï¼Œbaudrateï¼š0--9600bpsã€1--115200bps
 */
 void USART3Init(char baudrate)
 {
 
 	GPIO_InitTypeDef GPIO_InitStructure;
-	USART_InitTypeDef USART_InitStructure;	//¶¨Òå´®¿Ú³õÊ¼»¯½á¹¹Ìå
+	USART_InitTypeDef USART_InitStructure;	//å®šä¹‰ä¸²å£åˆå§‹åŒ–ç»“æ„ä½“
 	NVIC_InitTypeDef NVIC_InitStructure;
 	/* config USART3 clock */
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3 , ENABLE);
 		/* config GPIO clock */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB	, ENABLE);
 	/* USART3 GPIO config */
-	/* Configure USART3 Tx (PB.10) as alternate function push-pull ÍÆÀ­Êä³öÄ£Ê½*/
+	/* Configure USART3 Tx (PB.10) as alternate function push-pull æ¨æ‹‰è¾“å‡ºæ¨¡å¼*/
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);    
-	/* Configure USART3 Rx (PB.11) as input floating ¸¡µãÊäÈëÄ£Ê½*/
+	/* Configure USART3 Rx (PB.11) as input floating æµ®ç‚¹è¾“å…¥æ¨¡å¼*/
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
@@ -82,20 +82,20 @@ void USART3Init(char baudrate)
 	/* USART3 mode config */
 	
 	if(baudrate == 0)
-		USART_InitStructure.USART_BaudRate = 9600;//²¨ÌØÂÊ9600
+		USART_InitStructure.USART_BaudRate = 9600;//æ³¢ç‰¹ç‡9600
 	else if(baudrate == 1)
 		USART_InitStructure.USART_BaudRate = 115200;
-	USART_InitStructure.USART_WordLength = USART_WordLength_8b;//8Î»Êı¾İ
-	USART_InitStructure.USART_StopBits = USART_StopBits_1;//1¸öÍ£Ö¹Î»
-	USART_InitStructure.USART_Parity = USART_Parity_No ;//ÎŞĞ£ÑéÎ»
-	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//½ûÓÃRTSCTSÓ²¼şÁ÷¿ØÖÆ
-	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	//Ê¹ÄÜ·¢ËÍ½ÓÊÕ
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;//8ä½æ•°æ®
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;//1ä¸ªåœæ­¢ä½
+	USART_InitStructure.USART_Parity = USART_Parity_No ;//æ— æ ¡éªŒä½
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//ç¦ç”¨RTSCTSç¡¬ä»¶æµæ§åˆ¶
+	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	//ä½¿èƒ½å‘é€æ¥æ”¶
 
 	USART_Init(USART3, &USART_InitStructure); 
-	USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);//Ê¹ÄÜ½ÓÊÕÖĞ¶Ï
+	USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);//ä½¿èƒ½æ¥æ”¶ä¸­æ–­
 	USART_Cmd(USART3, ENABLE);
 	/* Configure the NVIC Preemption Priority Bits */  
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//µÚ2×é
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//ç¬¬2ç»„
 	
 	/* Enable the USARTy Interrupt */
 	NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;	 
@@ -106,9 +106,9 @@ void USART3Init(char baudrate)
 }
 
 
-void Uart1SendByte(char byte)   //´®¿Ú·¢ËÍÒ»¸ö×Ö½Ú
+void Uart1SendByte(char byte)   //ä¸²å£å‘é€ä¸€ä¸ªå­—èŠ‚
 {
-   USART_SendData(USART1, byte);        //Í¨¹ı¿âº¯Êı  ·¢ËÍÊı¾İ
+   USART_SendData(USART1, byte);        //é€šè¿‡åº“å‡½æ•°  å‘é€æ•°æ®
    while( USART_GetFlagStatus(USART1,USART_FLAG_TC)!= SET);  
 }
 
@@ -124,9 +124,9 @@ void Uart1SendStr(char *str)
 	for(i=0; i<len; i++)Uart1SendByte(*str++);
 }
 
-void Uart3SendByte( char byte)   //´®¿Ú·¢ËÍÒ»¸ö×Ö½Ú
+void Uart3SendByte( char byte)   //ä¸²å£å‘é€ä¸€ä¸ªå­—èŠ‚
 {
-  USART_SendData(USART3, byte);        //Í¨¹ı¿âº¯Êı  ·¢ËÍÊı¾İ
+  USART_SendData(USART3, byte);        //é€šè¿‡åº“å‡½æ•°  å‘é€æ•°æ®
   while( USART_GetFlagStatus(USART3,USART_FLAG_TC)!= SET);  
 }
 

@@ -1,12 +1,12 @@
 /**********************************************************************
-°æÈ¨ËùÓĞ£º	ß÷ÎØ´´ĞÂ¿Æ¼¼£¬2017.
-¹Ù		Íø£º	http://www.miaowlabs.com
-ÌÔ		±¦£º	https://shop275516297.taobao.com/
-ÎÄ ¼ş Ãû: 	dataflash.c
-×÷    Õß:   ß÷ÎØÊµÑéÊÒ
-°æ		±¾:   3.00
-Íê³ÉÈÕÆÚ:   2017.03.01
-¸Å		Òª: 	
+ç‰ˆæƒæ‰€æœ‰ï¼š	å–µå‘œåˆ›æ–°ç§‘æŠ€ï¼Œ2017.
+å®˜		ç½‘ï¼š	http://www.miaowlabs.com
+æ·˜		å®ï¼š	https://shop275516297.taobao.com/
+æ–‡ ä»¶ å: 	dataflash.c
+ä½œ    è€…:   å–µå‘œå®éªŒå®¤
+ç‰ˆ		æœ¬:   3.00
+å®Œæˆæ—¥æœŸ:   2017.03.01
+æ¦‚		è¦: 	
 
 
 ***********************************************************************/
@@ -25,14 +25,14 @@ static char FlashWBuffer[128];
 
 
 /*
-	²Ù×÷Ë³Ğò:
-	- Ã¿´ÎĞ´²Ù×÷Ö®Ç°½«ÕûÒ¶Êı¾İ¶ÁÈ¡µ½»º³åÇø
-	- ½«Òª´æ´¢µÄÊı¾İ°´Ö¸¶¨µØÖ·Ğ´µ½»º³åÇø
-	- Ò¶²Á³ı
-	- ½«Õû¸ö»º³åÇøÊı¾İĞ´µ½flash
+	æ“ä½œé¡ºåº:
+	- æ¯æ¬¡å†™æ“ä½œä¹‹å‰å°†æ•´å¶æ•°æ®è¯»å–åˆ°ç¼“å†²åŒº
+	- å°†è¦å­˜å‚¨çš„æ•°æ®æŒ‰æŒ‡å®šåœ°å€å†™åˆ°ç¼“å†²åŒº
+	- å¶æ“¦é™¤
+	- å°†æ•´ä¸ªç¼“å†²åŒºæ•°æ®å†™åˆ°flash
 
-	»º³åÇø´óĞ¡Îª128×Ö½Ú£¬Òò´ËÊµ¼ÊÓĞĞ§´æ´¢µØÖ··¶Î§0x00-0x7F
-	Èç¹ûÒªÔö¼Ó´æ´¢ÈİÁ¿£¬¿ÉÍ¨¹ıÔö´ó»º³åÇøÊµÏÖ
+	ç¼“å†²åŒºå¤§å°ä¸º128å­—èŠ‚ï¼Œå› æ­¤å®é™…æœ‰æ•ˆå­˜å‚¨åœ°å€èŒƒå›´0x00-0x7F
+	å¦‚æœè¦å¢åŠ å­˜å‚¨å®¹é‡ï¼Œå¯é€šè¿‡å¢å¤§ç¼“å†²åŒºå®ç°
 */
 void ProgramFlash(uint32_t addr, char* data, uint16_t len)
 {
@@ -58,7 +58,7 @@ void ProgramFlash(uint32_t addr, char* data, uint16_t len)
 }
 
 /*
-	flash¶Á²Ù×÷£¬µØÖ··¶Î§0x00--0x7F
+	flashè¯»æ“ä½œï¼Œåœ°å€èŒƒå›´0x00--0x7F
 */
 void ReadFlash(uint32_t addr, char* data, uint16_t len)
 {
@@ -68,9 +68,9 @@ void ReadFlash(uint32_t addr, char* data, uint16_t len)
 }
 
 /*
-	PID ²ÎÊı³õÊ¼»¯
-	³õ´ÎÔËĞ©Ôò½«Ä¬ÈÏÖµĞ´Èëflash
-	·Ç³õ´ÎÔËĞĞÔò´ÓflashÖĞ¶ÁÈ¡pid²ÎÊı
+	PID å‚æ•°åˆå§‹åŒ–
+	åˆæ¬¡è¿äº›åˆ™å°†é»˜è®¤å€¼å†™å…¥flash
+	éåˆæ¬¡è¿è¡Œåˆ™ä»flashä¸­è¯»å–pidå‚æ•°
 */
 void PIDInit()
 {
@@ -78,21 +78,21 @@ void PIDInit()
 	
 	ReadFlash(original_PID_Addr, flag, 2);
 	if((flag[0] == 0xa5)&&(flag[1] == 0x5a))
-	{// ·Ç³õ´ÎÔËĞĞ
+	{// éåˆæ¬¡è¿è¡Œ
 		PIDRead();
 	}
-	else{// ³õ´ÎÔËĞĞ
+	else{// åˆæ¬¡è¿è¡Œ
 		flag[0] = 0xa5;
 		flag[1] = 0x5a;
 		ProgramFlash(original_PID_Addr, flag, 2);
-		ProgramFlash(original_PID_Addr+2, (char*)&g_tCarAnglePID, sizeof(PID_t));// ±£´æ½Ç¶È»·Ä¬ÈÏpid²ÎÊı
-		ProgramFlash(original_PID_Addr+2+16, (char*)&g_tCarSpeedPID, sizeof(PID_t));// ±£´æËÙ¶È»·Ä¬ÈÏPID²ÎÊı
+		ProgramFlash(original_PID_Addr+2, (char*)&g_tCarAnglePID, sizeof(PID_t));// ä¿å­˜è§’åº¦ç¯é»˜è®¤pidå‚æ•°
+		ProgramFlash(original_PID_Addr+2+16, (char*)&g_tCarSpeedPID, sizeof(PID_t));// ä¿å­˜é€Ÿåº¦ç¯é»˜è®¤PIDå‚æ•°
 	}
 }
 
 /*
-	±£´æĞŞ¸ÄµÄPID²ÎÊı
-	flag£º0--±£³Ö½Ç¶È»·pid£¬1--±£´æËÙ¶È»·pid
+	ä¿å­˜ä¿®æ”¹çš„PIDå‚æ•°
+	flagï¼š0--ä¿æŒè§’åº¦ç¯pidï¼Œ1--ä¿å­˜é€Ÿåº¦ç¯pid
 */
 void PIDWrite(char flag)
 {
@@ -109,7 +109,7 @@ void PIDWrite(char flag)
 }
 
 /*
-	¶ÁÈ¡PID²ÎÊı£¬²ÎÊıÃ»ÓĞ¸üĞÂÔò¶ÁÈ¡Ä¬ÈÏÖµ
+	è¯»å–PIDå‚æ•°ï¼Œå‚æ•°æ²¡æœ‰æ›´æ–°åˆ™è¯»å–é»˜è®¤å€¼
 */
 void PIDRead()
 {
@@ -128,7 +128,7 @@ void PIDRead()
 		ReadFlash(original_PID_Addr+2+16, (char*)&g_tCarSpeedPID, sizeof(PID_t));
 }
 /*
-	½«PID²ÎÊı»Ö¸´µ½Ä¬ÈÏÖµ
+	å°†PIDå‚æ•°æ¢å¤åˆ°é»˜è®¤å€¼
 */
 void PIDReset(char flag)
 {

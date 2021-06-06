@@ -1,12 +1,12 @@
 /**********************************************************************
-°æÈ¨ËùÓĞ£º	ß÷ÎØ´´ĞÂ¿Æ¼¼£¬2017.
-¹Ù		Íø£º	http://www.miaowlabs.com
-ÌÔ		±¦£º	https://miaowlabs.taobao.com/
-ÎÄ ¼ş Ãû: 	main.c
-×÷    Õß:   ß÷ÎØÊµÑéÊÒ
-°æ		±¾:   3.00
-Íê³ÉÈÕÆÚ:   2017.03.01
-¸Å		Òª: 	
+ç‰ˆæƒæ‰€æœ‰ï¼š	å–µå‘œåˆ›æ–°ç§‘æŠ€ï¼Œ2017.
+å®˜		ç½‘ï¼š	http://www.miaowlabs.com
+æ·˜		å®ï¼š	https://miaowlabs.taobao.com/
+æ–‡ ä»¶ å: 	main.c
+ä½œ    è€…:   å–µå‘œå®éªŒå®¤
+ç‰ˆ		æœ¬:   3.00
+å®Œæˆæ—¥æœŸ:   2017.03.01
+æ¦‚		è¦: 	
 
 ***********************************************************************/
 #include "stm32f10x.h"
@@ -26,15 +26,15 @@
 #include "manage.h"
 
 
-//Ãë¼¶ÈÎÎñ
+//ç§’çº§ä»»åŠ¡
 void SecTask()
 {
 	if(SoftTimer[0])return;
 	else{
 		SoftTimer[0] = 1000;
 	}
-	g_RunTime++; 			// ¼ÇÂ¼ÔËĞĞÊ±¼ä
-	g_BatVolt = GetBatVoltage(); // ¶ÁÈ¡µç³ØµçÑ¹
+	g_RunTime++; 			// è®°å½•è¿è¡Œæ—¶é—´
+	g_BatVolt = GetBatVoltage(); // è¯»å–ç”µæ± ç”µå‹
 	
 	if(StatusFlag)ResponseStatus();
 	
@@ -43,37 +43,36 @@ void SecTask()
 
 
 /*
-	Ö÷º¯ÊıÈëÃÅ£¬ÁíÍâ£¬¿ØÖÆ¹¦ÄÜº¯ÊıÔÚstm32f10x_it.cÖ´ĞĞÎÄ¼şµÄµÎ´ğ¶¨Ê±Æ÷ÖĞ¶Ï·şÎñº¯ÊıÀïÑ­»·Ö´ĞĞ¡£
+	ä¸»å‡½æ•°å…¥é—¨ï¼Œå¦å¤–ï¼Œæ§åˆ¶åŠŸèƒ½å‡½æ•°åœ¨stm32f10x_it.cæ‰§è¡Œæ–‡ä»¶çš„æ»´ç­”å®šæ—¶å™¨ä¸­æ–­æœåŠ¡å‡½æ•°é‡Œå¾ªç¯æ‰§è¡Œã€‚
 */
 int main(void)
 {	
 	
-	BspInit();				//³õÊ¼»¯BSP
+	BspInit();				//åˆå§‹åŒ–BSP
 
-	PIDInit(); 				//³õÊ¼»¯PID
+	PIDInit(); 				//åˆå§‹åŒ–PID
 	
-	CarUpstandInit(); 	//³õÊ¼»¯ÏµÍ³²ÎÊı
+	CarUpstandInit(); 	//åˆå§‹åŒ–ç³»ç»Ÿå‚æ•°
 	
-	SysTick_Init();			//³õÊ¼»¯¶¨Ê±Æ÷	
+	SysTick_Init();			//åˆå§‹åŒ–å®šæ—¶å™¨	
 	
 	if(IsInfrareOK())
-		g_iGravity_Offset = 1; //Èô¹û¼ì²âµ½Ğü¹ÒºìÍâÄ£¿é£¬Ôò¸ü¸ÄÆ«ÒÆÖµ¡£
+		g_iGravity_Offset = 1; //è‹¥æœæ£€æµ‹åˆ°æ‚¬æŒ‚çº¢å¤–æ¨¡å—ï¼Œåˆ™æ›´æ”¹åç§»å€¼ã€‚
 	
 	ShowHomePageInit();
  
 	while (1)
 	{
 		
-		SecTask();			//Ãë¼¶ÈÎÎñ
+		SecTask();			//ç§’çº§ä»»åŠ¡
 
-		if(SoftTimer[1] == 0)
-		{// Ã¿¸ô20ms Ö´ĞĞÒ»´Î
-			SoftTimer[1] = 20;
-			ResponseIMU();			
-			DebugService();			
-			Parse(Uart3Buffer);
-			
-		}			
+		// if(SoftTimer[1] == 0)
+		// {// æ¯éš”20ms æ‰§è¡Œä¸€æ¬¡
+		// 	SoftTimer[1] = 20;
+		// 	ResponseIMU();			
+		// 	DebugService();			
+		// 	Parse(Uart3Buffer);
+		// }			
   	
 		if(SoftTimer[2] == 0)
 		{
@@ -82,15 +81,18 @@ int main(void)
 	
 			Read_Distane();
 
-			if(g_CarRunningMode == ULTRA_FOLLOW_MODE){
-				if(IsUltraOK())UltraControl(0);	//³¬Éù²¨¸úËæÄ£Ê½
-	 		}
-			if(g_CarRunningMode == ULTRA_AVOID_MODE){
-				if(IsUltraOK())UltraControl(1);	//³¬Éù²¨±ÜÕÏÄ£Ê½
-	 		}
-			else if(g_CarRunningMode == INFRARED_TRACE_MODE){
-				TailingControl();
-			}
+			if(IsUltraOK())
+				UltraControl(2);
+
+		// 	if(g_CarRunningMode == ULTRA_FOLLOW_MODE){
+		// 		if(IsUltraOK())UltraControl(0);	//è¶…å£°æ³¢è·Ÿéšæ¨¡å¼
+	 	// 	}
+		// 	if(g_CarRunningMode == ULTRA_AVOID_MODE){
+		// 		if(IsUltraOK())UltraControl(1);	//è¶…å£°æ³¢é¿éšœæ¨¡å¼
+	 	// 	}
+		// 	else if(g_CarRunningMode == INFRARED_TRACE_MODE){
+		// 		TailingControl();
+		// 	}
 		}			
 	}
 }

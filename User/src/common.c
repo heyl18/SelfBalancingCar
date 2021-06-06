@@ -1,12 +1,12 @@
 /**********************************************************************
-°æÈ¨ËùÓĞ£º	ß÷ÎØ´´ĞÂ¿Æ¼¼£¬2017.
-¹Ù		Íø£º	http://www.miaowlabs.com
-ÌÔ		±¦£º	https://shop275516297.taobao.com/
-ÎÄ ¼ş Ãû: 	common.c
-×÷    Õß:   ß÷ÎØÊµÑéÊÒ
-°æ		±¾:   3.00
-Íê³ÉÈÕÆÚ:   2017.03.01
-¸Å		Òª: 	
+ç‰ˆæƒæ‰€æœ‰ï¼š	å–µå‘œåˆ›æ–°ç§‘æŠ€ï¼Œ2017.
+å®˜		ç½‘ï¼š	http://www.miaowlabs.com
+æ·˜		å®ï¼š	https://shop275516297.taobao.com/
+æ–‡ ä»¶ å: 	common.c
+ä½œ    è€…:   å–µå‘œå®éªŒå®¤
+ç‰ˆ		æœ¬:   3.00
+å®Œæˆæ—¥æœŸ:   2017.03.01
+æ¦‚		è¦: 	
 
 
 ***********************************************************************/
@@ -17,7 +17,7 @@
 
 
 /*
-	ÑÓÊ±º¯Êı
+	å»¶æ—¶å‡½æ•°
 */
 void delay_us(unsigned int n)
 {
@@ -36,7 +36,7 @@ void get_ms(unsigned long *time)
 
 
 /*
-	¼ÆËãÒì»ò½á¹û
+	è®¡ç®—å¼‚æˆ–ç»“æœ
 */
 unsigned char XOR_Get(char * str, unsigned char  len)
 {
@@ -50,7 +50,7 @@ unsigned char XOR_Get(char * str, unsigned char  len)
 }
 
 /*
-	¼ìÑéÒì»ò½á¹ûÊÇ·ñÕıÈ·
+	æ£€éªŒå¼‚æˆ–ç»“æœæ˜¯å¦æ­£ç¡®
 */
 unsigned char XOR_Check(char * str, unsigned char  len,unsigned char checksum)
 {
@@ -61,7 +61,7 @@ unsigned char XOR_Check(char * str, unsigned char  len,unsigned char checksum)
 }
 
 /*
-	¼ÆËãÀÛ¼ÓºÍ
+	è®¡ç®—ç´¯åŠ å’Œ
 */
 unsigned char Sum_Get(char *dat,char len)
 {
@@ -74,7 +74,7 @@ unsigned char Sum_Get(char *dat,char len)
 }
 
  /*
-	 16Î»crc¼ÆËã
+	 16ä½crcè®¡ç®—
  */
  unsigned short CRC16Calculate(unsigned char *buff, unsigned char len)
 {

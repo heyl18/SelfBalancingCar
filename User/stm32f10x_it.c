@@ -136,29 +136,29 @@ void TIM1_UP_IRQHandler(void)
 
 
 /*
-	ÏµÍ³µÎ´ğ¶¨Ê±ÖĞ¶Ï£¬ÖĞ¶ÏÖÜÆÚ1ms
+	ç³»ç»Ÿæ»´ç­”å®šæ—¶ä¸­æ–­ï¼Œä¸­æ–­å‘¨æœŸ1ms
 */
 void SysTick_Handler(void)
 {  
-	SoftTimerCountDown();			 //Èí¶¨Ê±Æ÷
+	SoftTimerCountDown();			 //è½¯å®šæ—¶å™¨
 
 	g_u8MainEventCount++;
 
 	g_u8SpeedControlPeriod++;     
-	SpeedControlOutput();   		 //ËÙ¶È»·¿ØÖÆÊä³öº¯Êı£¬Ã¿1msÖ´ĞĞÒ»´Î
+	SpeedControlOutput();   		 //é€Ÿåº¦ç¯æ§åˆ¶è¾“å‡ºå‡½æ•°ï¼Œæ¯1msæ‰§è¡Œä¸€æ¬¡
 	if(g_u8MainEventCount>=5)
 	{
 		g_u8MainEventCount=0;
-		GetMotorPulse();			 //²¶»ñµç»úÂö³å£¨ËÙ¶È£©º¯Êı£¬Ã¿5msÖ´ĞĞÒ»´Î
+		GetMotorPulse();			 //æ•è·ç”µæœºè„‰å†²ï¼ˆé€Ÿåº¦ï¼‰å‡½æ•°ï¼Œæ¯5msæ‰§è¡Œä¸€æ¬¡
 	}
 	else if(g_u8MainEventCount==1)
 	{
-		MPU6050_Pose();				 //¶ÁÈ¡MPU6050Êı¾İº¯Êı£¬Ã¿5msÖ´ĞĞÒ»´Î
-		AngleCalculate();			 //½Ç¶È»·¼ÆËãº¯Êı£¬Ã¿5msÖ´ĞĞÒ»´Î
+		MPU6050_Pose();				 //è¯»å–MPU6050æ•°æ®å‡½æ•°ï¼Œæ¯5msæ‰§è¡Œä¸€æ¬¡
+		AngleCalculate();			 //è§’åº¦ç¯è®¡ç®—å‡½æ•°ï¼Œæ¯5msæ‰§è¡Œä¸€æ¬¡
 	}
 	else if(g_u8MainEventCount==2)
 	{
-		AngleControl();				 //½Ç¶È»·¿ØÖÆº¯Êı£¬Ã¿5msÖ´ĞĞÒ»´Î
+		AngleControl();				 //è§’åº¦ç¯æ§åˆ¶å‡½æ•°ï¼Œæ¯5msæ‰§è¡Œä¸€æ¬¡
 
 	}
 	else if(g_u8MainEventCount==3)
@@ -166,20 +166,20 @@ void SysTick_Handler(void)
 		g_u8SpeedControlCount++;
     	if(g_u8SpeedControlCount >= 5)//25ms
     	{		
-      		SpeedControl();          //³µÄ£ËÙ¶È¿ØÖÆº¯Êı£¬Ã¿25msµ÷ÓÃÒ»´Î
+      		SpeedControl();          //è½¦æ¨¡é€Ÿåº¦æ§åˆ¶å‡½æ•°ï¼Œæ¯25msè°ƒç”¨ä¸€æ¬¡
       		g_u8SpeedControlCount=0;
 			    g_u8SpeedControlPeriod=0;
     	}
 	}
 	else if(g_u8MainEventCount==4)
 	{
-		MotorManage();			//µç»úÊ¹ÄÜ/Ê§ÄÜ¿ØÖÆº¯Êı£¬Ã¿5msÖ´ĞĞÒ»´Î
-		MotorOutput();	 		//µç»úÊä³öº¯Êı£¬Ã¿5msÖ´ĞĞÒ»´Î
+		MotorManage();			//ç”µæœºä½¿èƒ½/å¤±èƒ½æ§åˆ¶å‡½æ•°ï¼Œæ¯5msæ‰§è¡Œä¸€æ¬¡
+		MotorOutput();	 		//ç”µæœºè¾“å‡ºå‡½æ•°ï¼Œæ¯5msæ‰§è¡Œä¸€æ¬¡
 	}
 }
 
 /*
-	À¶ÑÀ´®¿Ú½ÓÊÕÖĞ¶Ï
+	è“ç‰™ä¸²å£æ¥æ”¶ä¸­æ–­
 */
 void USART3_IRQHandler(void)
 {

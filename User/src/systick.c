@@ -1,12 +1,12 @@
 /**********************************************************************
-°æÈ¨ËùÓÐ£º	ß÷ÎØ´´ÐÂ¿Æ¼¼£¬2017.
-¹Ù		Íø£º	http://www.miaowlabs.com
-ÌÔ		±¦£º	https://miaowlabs.taobao.com/
-ÎÄ ¼þ Ãû: 	systick.c
-×÷    Õß:   ß÷ÎØÊµÑéÊÒ
-°æ		±¾:   3.00
-Íê³ÉÈÕÆÚ:   2017.03.01
-¸Å		Òª: 	
+ç‰ˆæƒæ‰€æœ‰ï¼š	å–µå‘œåˆ›æ–°ç§‘æŠ€ï¼Œ2017.
+å®˜		ç½‘ï¼š	http://www.miaowlabs.com
+æ·˜		å®ï¼š	https://miaowlabs.taobao.com/
+æ–‡ ä»¶ å: 	systick.c
+ä½œ    è€…:   å–µå‘œå®žéªŒå®¤
+ç‰ˆ		æœ¬:   3.00
+å®Œæˆæ—¥æœŸ:   2017.03.01
+æ¦‚		è¦: 	
 
 
 ***********************************************************************/
@@ -14,7 +14,7 @@
 
 #include "SysTick.h"
 
-// ÏµÍ³Èí¼þ¶¨Ê±Æ÷£¬·Ö±æÂÊÎª1ms£¬µÝ¼õ¼ÆÊý
+// ç³»ç»Ÿè½¯ä»¶å®šæ—¶å™¨ï¼Œåˆ†è¾¨çŽ‡ä¸º1msï¼Œé€’å‡è®¡æ•°
 unsigned short SoftTimer[5] = {0, 0, 0, 0, 0};
 
 void SoftTimerCountDown(void)
@@ -26,27 +26,27 @@ void SoftTimerCountDown(void)
 }
 
 /*
- * º¯ÊýÃû£ºSysTick_Init
- * ÃèÊö  £ºÆô¶¯ÏµÍ³µÎ´ð¶¨Ê±Æ÷ SysTick
- * ÊäÈë  £ºÎÞ
- * Êä³ö  £ºÎÞ
- * µ÷ÓÃ  £ºÍâ²¿µ÷ÓÃ 
+ * å‡½æ•°åï¼šSysTick_Init
+ * æè¿°  ï¼šå¯åŠ¨ç³»ç»Ÿæ»´ç­”å®šæ—¶å™¨ SysTick
+ * è¾“å…¥  ï¼šæ— 
+ * è¾“å‡º  ï¼šæ— 
+ * è°ƒç”¨  ï¼šå¤–éƒ¨è°ƒç”¨ 
  */
 void SysTick_Init(void)
 {
-	/* SystemFrequency / 100     10msÖÐ¶ÏÒ»´Î
-	   SystemFrequency / 1000    1msÖÐ¶ÏÒ»´Î
-	 * SystemFrequency / 100000	 10usÖÐ¶ÏÒ»´Î
-	 * SystemFrequency / 1000000 1usÖÐ¶ÏÒ»´Î
+	/* SystemFrequency / 100     10msä¸­æ–­ä¸€æ¬¡
+	   SystemFrequency / 1000    1msä¸­æ–­ä¸€æ¬¡
+	 * SystemFrequency / 100000	 10usä¸­æ–­ä¸€æ¬¡
+	 * SystemFrequency / 1000000 1usä¸­æ–­ä¸€æ¬¡
 	 */
 	SystemCoreClockUpdate();
 
-	if (SysTick_Config(SystemCoreClock / 1000))	// ST3.5.0¿â°æ±¾
+	if (SysTick_Config(SystemCoreClock / 1000))	// ST3.5.0åº“ç‰ˆæœ¬
 	{ 
 		/* Capture error */ 
 		while (1);
 	}
-	// ¿ªÆôµÎ´ð¶¨Ê±Æ÷  
+	// å¼€å¯æ»´ç­”å®šæ—¶å™¨  
 	SysTick->CTRL |=  SysTick_CTRL_ENABLE_Msk;
 }
 

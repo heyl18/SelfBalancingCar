@@ -1,12 +1,12 @@
 /**********************************************************************
-°æÈ¨ËùÓÐ£º	ß÷ÎØ´´ÐÂ¿Æ¼¼£¬2017.
-¹Ù		Íø£º	http://www.miaowlabs.com
-ÌÔ		±¦£º	https://shop275516297.taobao.com/
-ÎÄ ¼þ Ãû: 	communicate.c
-×÷    Õß:   ß÷ÎØÊµÑéÊÒ
-°æ		±¾:   3.00
-Íê³ÉÈÕÆÚ:   2017.03.01
-¸Å		Òª: 	
+ç‰ˆæƒæ‰€æœ‰ï¼š	å–µå‘œåˆ›æ–°ç§‘æŠ€ï¼Œ2017.
+å®˜		ç½‘ï¼š	http://www.miaowlabs.com
+æ·˜		å®ï¼š	https://shop275516297.taobao.com/
+æ–‡ ä»¶ å: 	communicate.c
+ä½œ    è€…:   å–µå‘œå®žéªŒå®¤
+ç‰ˆ		æœ¬:   3.00
+å®Œæˆæ—¥æœŸ:   2017.03.01
+æ¦‚		è¦: 	
 
 
 ***********************************************************************/
@@ -26,7 +26,7 @@
 char StatusFlag=0;
 
 /*
-	ÉÏ±¨×ËÌ¬Êý¾Ý
+	ä¸ŠæŠ¥å§¿æ€æ•°æ®
 */
 void ResponseIMU(void)
 {
@@ -39,7 +39,7 @@ void ResponseIMU(void)
 }
 
 /*
-	ÉÏ±¨PIDÖµ
+	ä¸ŠæŠ¥PIDå€¼
 */
 void ResponsePID(PIDType type)
 {
@@ -58,7 +58,7 @@ void ResponsePID(PIDType type)
 }
 
 /*
-	ÉÏ±¨°æ±¾ÐÅÏ¢
+	ä¸ŠæŠ¥ç‰ˆæœ¬ä¿¡æ¯
 */
 void ResponseInfo(void)
 {
@@ -72,7 +72,7 @@ void ResponseInfo(void)
 
 
 /*
-	ÉÏ±¨×´Ì¬ÐÅÏ¢
+	ä¸ŠæŠ¥çŠ¶æ€ä¿¡æ¯
 */
 void ResponseStatus(void)
 {
@@ -84,9 +84,9 @@ void ResponseStatus(void)
 }
 
 /*
-	APPÊý¾Ý½âÎöº¯Êý
-	Ð­Òé¹æ·¶:Ö¡Í·+³¤¶È+ÄÚÈÝ+Ð£Ñé
-	Èç:#17,CM,-27.314,-5.716*56;  Ö¡Í·# ³¤¶È17  ÄÚÈÝCM,-27.314,-5.716 Ð£Ñé56£¬³¤¶ÈÎªÄÚÈÝ×Ö½ÚÊý
+	APPæ•°æ®è§£æžå‡½æ•°
+	åè®®è§„èŒƒ:å¸§å¤´+é•¿åº¦+å†…å®¹+æ ¡éªŒ
+	å¦‚:#17,CM,-27.314,-5.716*56;  å¸§å¤´# é•¿åº¦17  å†…å®¹CM,-27.314,-5.716 æ ¡éªŒ56ï¼Œé•¿åº¦ä¸ºå†…å®¹å­—èŠ‚æ•°
 */
 void Parse(char *dataInput)
 {
@@ -105,7 +105,7 @@ void Parse(char *dataInput)
 		if(*p == '#')// 
 		{
 			len = (unsigned char)atof(strtok(p+1, ","));//length of data
-			if((len>0)&&(len<100))//³¤¶È´óÓÚ100µÄÊý¾ÝºöÂÔ
+			if((len>0)&&(len<100))//é•¿åº¦å¤§äºŽ100çš„æ•°æ®å¿½ç•¥
 			{
 				if(len<10){
 					check = (unsigned char)atof(strtok(p+len+4, ";"));
@@ -117,17 +117,17 @@ void Parse(char *dataInput)
 					ret = XOR_Check(p+4, len, check);
 					p += 4;
 				}
-				if(ret){//  Ð£ÑéÕýÈ·£¬¿ªÊ¼½âÎöÊý¾Ý
+				if(ret){//  æ ¡éªŒæ­£ç¡®ï¼Œå¼€å§‹è§£æžæ•°æ®
 					if(g_CarRunningMode == CONTROL_MODE)
 					{
-						if(strstr(p , "CS")){Steer(0, 0);}//Í£Ö¹
-						else if(strstr(p, "CJ")){// Ò¡¸Ë¿ØÖÆ
+						if(strstr(p , "CS")){Steer(0, 0);}//åœæ­¢
+						else if(strstr(p, "CJ")){// æ‘‡æ†æŽ§åˆ¶
 							strtok(p, ",");
-							fTemp1= atof(strtok(NULL,","));	// XÖá×ø±ê
-							fTemp2 = atof(strtok(NULL,"*"));// YÖá×ø±ê
+							fTemp1= atof(strtok(NULL,","));	// Xè½´åæ ‡
+							fTemp2 = atof(strtok(NULL,"*"));// Yè½´åæ ‡
 							Steer(fTemp1 * 10, fTemp2 * 10);
 						}
-						else if(strstr(p, "CM")){//ÖØÁ¦¸ÐÓ¦¿ØÖÆ
+						else if(strstr(p, "CM")){//é‡åŠ›æ„Ÿåº”æŽ§åˆ¶
 							strtok(p, ",");
 							fTemp1 = atof(strtok(NULL, ",")); 		// Pitch
 	      						fTemp2 = atof(strtok(NULL, "*")); 	// Roll
@@ -135,21 +135,21 @@ void Parse(char *dataInput)
 						}
 					}
 					
-					if(strstr(p,"SNK")){// ÉèÖÃÎªÆÕÍ¨Ò£¿ØÄ£Ê½
+					if(strstr(p,"SNK")){// è®¾ç½®ä¸ºæ™®é€šé¥æŽ§æ¨¡å¼
 						g_CarRunningMode = CONTROL_MODE;
 					}
-					else if(strstr(p,"SUF")){// ÉèÖÃÎª³¬Éù²¨¸úËæÄ£Ê½
+					else if(strstr(p,"SUF")){// è®¾ç½®ä¸ºè¶…å£°æ³¢è·Ÿéšæ¨¡å¼
 						g_CarRunningMode = ULTRA_FOLLOW_MODE;
 					}
-					else if(strstr(p,"SUA")){// ÉèÖÃÎª³¬Éù²¨±ÜÕÏÄ£Ê½
+					else if(strstr(p,"SUA")){// è®¾ç½®ä¸ºè¶…å£°æ³¢é¿éšœæ¨¡å¼
 						g_CarRunningMode = ULTRA_AVOID_MODE;
 						Steer(0, 5);
 					}
-					else if(strstr(p,"SIT")){// ÉèÖÃÎªºìÍâÑ°¼£Ä£Ê½
+					else if(strstr(p,"SIT")){// è®¾ç½®ä¸ºçº¢å¤–å¯»è¿¹æ¨¡å¼
 						g_CarRunningMode = INFRARED_TRACE_MODE;
 					}
 					
-					else if(strstr(p,"SAP")){// ÉèÖÃ½Ç¶È»·PID
+					else if(strstr(p,"SAP")){// è®¾ç½®è§’åº¦çŽ¯PID
 						strtok(p, ",");
 						g_tCarAnglePID.P = atof(strtok(NULL,","));
 						g_tCarAnglePID.I = atof(strtok(NULL,","));
@@ -157,7 +157,7 @@ void Parse(char *dataInput)
 						PIDWrite(AnglePID);
 						ResponsePID(AnglePID);
 					}
-					else if(strstr(p,"SSP")){// ÉèÖÃËÙ¶È»·PID
+					else if(strstr(p,"SSP")){// è®¾ç½®é€Ÿåº¦çŽ¯PID
 						strtok(p, ",");
 						g_tCarSpeedPID.P = atof(strtok(NULL,","));
 						g_tCarSpeedPID.I = atof(strtok(NULL,","));
@@ -165,25 +165,25 @@ void Parse(char *dataInput)
 						PIDWrite(SpeedPID);
 						ResponsePID(SpeedPID);
 					}
-					else if(strstr(p, "GAP")){//²éÑ¯½Ç¶È»·PID
+					else if(strstr(p, "GAP")){//æŸ¥è¯¢è§’åº¦çŽ¯PID
 						ResponsePID(AnglePID);
 					}
-					else if(strstr(p, "GSP")){//²éÑ¯ËÙ¶È»·PID
+					else if(strstr(p, "GSP")){//æŸ¥è¯¢é€Ÿåº¦çŽ¯PID
 						ResponsePID(SpeedPID);
 					}
-					else if(strstr(p,"RA")){// ½Ç¶È»·pid»Ö¸´Ä¬ÈÏÖµ
+					else if(strstr(p,"RA")){// è§’åº¦çŽ¯pidæ¢å¤é»˜è®¤å€¼
 						PIDReset(AnglePID);
 						ResponsePID(AnglePID);
 					}
-					else if(strstr(p,"RV")){//ËÙ¶È»·pid»Ö¸´Ä¬ÈÏÖµ
+					else if(strstr(p,"RV")){//é€Ÿåº¦çŽ¯pidæ¢å¤é»˜è®¤å€¼
 						PIDReset(SpeedPID);
 						ResponsePID(SpeedPID);
 					}
-					else if(strstr(p,"RB")){//²éÑ¯°æ±¾¼°¿ªÆô×´Ì¬ÉÏ±¨ÐÅÏ¢
+					else if(strstr(p,"RB")){//æŸ¥è¯¢ç‰ˆæœ¬åŠå¼€å¯çŠ¶æ€ä¸ŠæŠ¥ä¿¡æ¯
 						StatusFlag = 1;
 						ResponseInfo();
 					}
-					else if(strstr(p,"RS")){//¹Ø±Õ×´Ì¬ÉÏ±¨
+					else if(strstr(p,"RS")){//å…³é—­çŠ¶æ€ä¸ŠæŠ¥
 						StatusFlag = 0;
 					}
 				}
