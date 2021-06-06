@@ -82,7 +82,7 @@ int main(void)
 			Read_Distane();
 
 			if(IsUltraOK())
-				UltraControl(2);
+				UltraControl(3);
 
 		// 	if(g_CarRunningMode == ULTRA_FOLLOW_MODE){
 		// 		if(IsUltraOK())UltraControl(0);	//超声波跟随模式

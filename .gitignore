@@ -1,3 +1,8 @@
 .vscode
 /Output
 DebugConfig
+BasicBalance.map
+*.HYL
+*.hyl-pc
+*.uvoptx
+*.lst

@@ -92,6 +92,7 @@ int mytimestamp = 0;
 float beginAngle = 0;
 int turnOrMove = 0;
 int forward_cnt = 3;
+int stopCar = 1;
 
 void fixYaw(){
 	if(g_fYawAngle < -1){
@@ -132,7 +133,29 @@ void forward(){
 		Steer(0, 6);
 	}
 }
-
+void moveForward(float a){
+	if(g_fYawAngle < -10 + a){
+		Steer(-4, 3);
+	}
+	else if(g_fYawAngle < -5 + a){
+		Steer(-2, 4);
+	}
+	else if(g_fYawAngle < -1 + a){
+		Steer(-1, 5);
+	}
+	else if(g_fYawAngle > 1 + a){
+		Steer(1, 5);
+	}
+	else if(g_fYawAngle > 5 + a){
+		Steer(2, 4);
+	}
+	else if(g_fYawAngle > 10 + a){
+		Steer(4, 3);
+	}
+	else{	
+		Steer(0, 6);
+	}
+}
 void back(){
 	if(g_fYawAngle < -10){
 		Steer(-4, -3);
@@ -212,6 +235,31 @@ void turnRight(float turnAngle){
 	}
 }
 
+int lastTurn = 0;
+int direct = 0;
+int isTurn = 0;
+void realTurnLeft(float turnAngle){
+	if(g_fYawAngle < beginAngle + turnAngle){
+		Steer(-5,0);
+	}
+	else if(g_fYawAngle > beginAngle + turnAngle){
+		Steer(-1,1);
+		isTurn = 0;
+	}
+}
+
+void realTurnRight(float turnAngle){
+	if(g_fYawAngle > beginAngle - turnAngle){
+		Steer(5,0);
+	}
+	else if(g_fYawAngle < beginAngle - turnAngle){
+		Steer(-1,1);
+		isTurn = 0;
+	}
+}
+
+int directZeroCnt = 0;
+int a = 0, b = 0 ,c = 0 , d= 0;
 void UltraControl(int mode) // 每隔20ms 执行一次
 {	
 	if(mode == 2){
@@ -277,6 +325,80 @@ void UltraControl(int mode) // 每隔20ms 执行一次
 		{
 			Steer(0, 4);
 		}
+	}
+	else if(mode == 3){
+		if(stopCar == 1){
+			if(directZeroCnt >= 8){
+				stopCar = 0;
+				fixYaw();
+				step++;
+			}
+			else{
+				TailingControl();
+			}
+		}
+		if(step == 2){
+			fixYaw();
+		}
+		else if(step == 1){
+			if(isTurn){
+				if(lastTurn == 1){
+					realTurnLeft(90);
+				}
+				else{
+					realTurnRight(90);
+				}
+			}
+			else if(Distance <= 20){
+				beginAngle = g_fYawAngle;
+				isTurn = 1;
+				if(direct == 0){
+					if(lastTurn == 1){ //上次是左转
+						direct = 1;
+						lastTurn = 1;
+					}
+					else{
+						direct = -1;
+						lastTurn = -1;
+					}
+				}
+				else if(direct == 1){ // 现在朝左，右转转到先前
+					direct = 0;
+					lastTurn = -1;
+				}
+				else if(direct == -1){ // 现在朝右，左转转到先前
+					direct = 0; 
+					lastTurn = 1;
+				}
+			}
+			else if(direct == 0){
+				forward();
+				char result = InfraredDetect();
+				if(a == 0){
+					a = result & infrared_channel_La;
+				}
+				if(b == 0){
+					b = result & infrared_channel_Lb;
+				}
+				if(c == 0){
+					c = result & infrared_channel_Rb;
+				}
+				if(d == 0){
+					d = result & infrared_channel_Rb;
+				}
+				if(a && b && c && d){
+					step++;
+				}
+			
+			}
+			else if(direct == 1){// 左
+				moveForward(90);
+			}
+			else if(direct == -1){// 右
+				moveForward(-90);
+			}
+		}
+
 	}
 }
 
@@ -721,7 +843,6 @@ void TailingControl(void)
 	float speed = 0;
 
 	result = InfraredDetect();
-	
 	if(result & infrared_channel_Lc)
 		direct = -10;
 	else if(result & infrared_channel_Lb)
@@ -735,10 +856,16 @@ void TailingControl(void)
 	else if(result & infrared_channel_Ra)
 		direct = 4;
 	else
-		direct = 0.0;
-
-	speed = 3;
-
+		direct = 0;
+	if(g_RunTime > 7){
+		if(direct == 0){
+			directZeroCnt ++;
+		}
+		if(direct != 0){
+			directZeroCnt = 0;
+		}
+	}
+	speed = 2.2;
 	Steer(direct, speed);
 
 #if INFRARE_DEBUG_EN > 0
