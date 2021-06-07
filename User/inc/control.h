@@ -49,6 +49,7 @@ extern float g_fGyroAngleSpeed;
 extern float g_fGravityAngle;			
 extern float g_fYawAngle; // yaw角，用于修正小车前进方向
 extern float g_fDx;
+extern int myStep;
 
 extern PID_t g_tCarAnglePID;
 extern PID_t g_tCarSpeedPID;

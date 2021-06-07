@@ -74,7 +74,7 @@ void ShowHomePage(void)
 	}
 	
 	if(step == 4){
-		snprintf((char*)buff, 21, "Angle:     %0.1f      ", g_fCarAngle);
+		snprintf((char*)buff, 21, "myStep:     %d      ", myStep);
 		OLED_ShowString(0, 4, buff);
 	}
 	if(step == 5){

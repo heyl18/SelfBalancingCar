@@ -80,11 +80,14 @@ static int AbnormalSpinFlag = 0;
 #define TURNING_RIGHT -1
 #define MOVING_FORWARD 0
 #define MOVING_LEFT 1
-#define MOVING_RIGHT -2
+#define MOVING_RIGHT -1
 
-#define ENDING_TAILING_THRESH 5 // 巡线5s后才开始检测是否结束
+#define ENDING_TAILING_THRESH 0 // 巡线几秒后才开始检测是否结束
 
-int step = 0; // 当前程序行进到第几步
+#define MOVING_20CM 1460
+
+int nowTurnAroundCnt = 0;
+int myStep = 0; // 当前程序行进到第几步
 int g_iMytimestamp = 0; // 用于判断程序状态的时间戳
 float beginAngle = 0; // 转向前设置，记录开始转向前的角度
 int turnOrMove = 0; // 行进转向的记录
@@ -95,6 +98,21 @@ int direct = 0; // 0朝前
 int isTurn = 0; // 记录是否正在转弯，1为正在转弯
 int directZeroCnt = 0; // 连续朝0方向前进的次数，检测到四个1设置为100
 char detected = 0x01 | (0x01 << 1) | 0x01 << 2 | 0x01 << 3;// 记录红外传感器测量是否是四个1
+int lastDetectedTime = 0;
+
+//const float DistanceThresh = 15;
+// const int speed_0 = 2;
+// const int speed_1 = 3;
+// const int speed_2 = 4;
+// const int speed_3 = 5;
+// const int speed_4 = 6;
+
+const float DistanceThresh = 20;
+const int speed_0 = 3;
+const int speed_1 = 5;
+const int speed_2 = 6;
+const int speed_3 = 7;
+const int speed_4 = 9;
 
 int stopDetect(){
 	char fraredresult  = InfraredDetectAll(); // 记录红外数据
@@ -122,48 +140,48 @@ void makeSelfBanlance(){ // 控制小车原地站立
 
 void forward(){ // 朝着初始角度前进
 	if(g_fYawAngle < -10){
-		Steer(-4, 3);
+		Steer(-4, speed_1);
 	}
 	else if(g_fYawAngle < -5){
-		Steer(-2, 4);
+		Steer(-2, speed_2);
 	}
 	else if(g_fYawAngle < -1){
-		Steer(-1, 5);
+		Steer(-1, speed_3);
 	}
 	else if(g_fYawAngle > 1){
-		Steer(1, 5);
+		Steer(1, speed_3);
 	}
 	else if(g_fYawAngle > 5){
-		Steer(2, 4);
+		Steer(2, speed_2);
 	}
 	else if(g_fYawAngle > 10){
-		Steer(4, 3);
+		Steer(4, speed_1);
 	}
 	else{	
-		Steer(0, 6);
+		Steer(0, speed_4);
 	}
 }
 void moveForward(float a){ // 朝着角度a前进,a大于0为朝初始角的左边，小于0为右边
 	if(g_fYawAngle < -10 + a){
-		Steer(-4, 3);
+		Steer(-4, speed_1);
 	}
 	else if(g_fYawAngle < -5 + a){
-		Steer(-2, 4);
+		Steer(-2, speed_2);
 	}
 	else if(g_fYawAngle < -1 + a){
-		Steer(-1, 5);
+		Steer(-1, speed_3);
 	}
 	else if(g_fYawAngle > 1 + a){
-		Steer(1, 5);
+		Steer(1, speed_3);
 	}
 	else if(g_fYawAngle > 5 + a){
-		Steer(2, 4);
+		Steer(2, speed_2);
 	}
 	else if(g_fYawAngle > 10 + a){
-		Steer(4, 3);
+		Steer(4, speed_1);
 	}
 	else{	
-		Steer(0, 6);
+		Steer(0, speed_4);
 	}
 }
 void back(){ // 朝着初始角度后退
@@ -191,16 +209,16 @@ void back(){ // 朝着初始角度后退
 }
 
 /*
-	原地罚站timeCnt秒，正常情况应当20ms调用一次
+	原地罚站timeCnt秒，需要调用时应当20ms调用一次
 		输入：timeCnt （第一次调用前需要更新g_iMytimestamp）
-		输出：step加1，beginAngle更新，将turnOrMove置0
+		输出：myStep加1，beginAngle更新，将turnOrMove置0
 */
 void wait(int timeCnt){
 	if( g_RunTime - g_iMytimestamp <= timeCnt){
 		makeSelfBanlance();
 	}
 	else{
-		step += 1;
+		myStep += 1;
 		beginAngle = g_fYawAngle;
 		turnOrMove = 0;
 	}
@@ -214,11 +232,11 @@ void wait(int timeCnt){
 void turnLeft(float turnAngle){ 
 	if(g_fYawAngle < beginAngle + turnAngle){
 		if(turnOrMove == 0){
-			Steer(-3, 4);
+			Steer(-3, speed_2);
 			turnOrMove ++;
 		}
 		else{
-			Steer(0, 4);
+			Steer(0, speed_2);
 			turnOrMove ++;
 		}
 		if(turnOrMove >= forward_cnt){
@@ -227,7 +245,7 @@ void turnLeft(float turnAngle){
 	}
 	else{	
 		Steer(0, 0);
-		step += 1;
+		myStep += 1;
 		g_iMytimestamp = g_RunTime;
 	}
 }
@@ -239,11 +257,11 @@ void turnLeft(float turnAngle){
 void turnRight(float turnAngle){
 	if(g_fYawAngle > beginAngle - turnAngle){
 		if(turnOrMove == 0){
-			Steer(3, 4);
+			Steer(3, speed_2);
 			turnOrMove ++;
 		}
 		else{
-			Steer(0, 4);
+			Steer(0, speed_2);
 			turnOrMove ++;
 		}
 		if(turnOrMove >= forward_cnt){
@@ -252,7 +270,7 @@ void turnRight(float turnAngle){
 	}
 	else{	
 		Steer(0, 0);
-		step += 1;
+		myStep += 1;
 		g_iMytimestamp = g_RunTime;
 	}
 }
@@ -266,7 +284,7 @@ void realTurnLeft(float turnAngle){
 		Steer(-5,0);
 	}
 	else if(g_fYawAngle > beginAngle + turnAngle){
-		Steer(-1,1);
+		Steer(-1,speed_0);
 		isTurn = 0;
 	}
 }
@@ -280,7 +298,7 @@ void realTurnRight(float turnAngle){
 		Steer(5,0);
 	}
 	else if(g_fYawAngle < beginAngle - turnAngle){
-		Steer(-1,1);
+		Steer(-1,speed_0);
 		isTurn = 0;
 	}
 }
@@ -291,58 +309,68 @@ void realTurnRight(float turnAngle){
 void UltraControl(int mode) // 每隔20ms 执行一次
 {	
 	if(mode == 2){// 任务一
-		if(step == 0 && (g_iLeftTurnRoundCnt + g_iRightTurnRoundCnt) / 2 < -7735){
-			step += 1; // 前进且到达目的地
+		if(myStep == 0 && (g_iLeftTurnRoundCnt + g_iRightTurnRoundCnt) / 2 < -7735){
+			myStep += 1; // 前进且到达目的地
 			g_iMytimestamp = g_RunTime; // 打上时间戳调用wait
 			return;
 		}
-		if(step == 0){ // 前进
+		if(myStep == 0){ // 前进
 			forward();
 		}
-		else if(step == 1){// 原地等待2秒
+		else if(myStep == 1){// 原地等待2秒
 			wait(2);
 		}
-		else if(step == 2){ // 等待一秒后开始后退
+		else if(myStep == 2){ // 等待一秒后开始后退
 			if( (g_iLeftTurnRoundCnt + g_iRightTurnRoundCnt) / 2 < 0){
 				back();
 			}
 			else{
-				step += 1; // 后退完成
+				myStep += 1; // 后退完成
 				g_iMytimestamp = g_RunTime; // 打上时间戳调用wait
 				return;
 			}
 		}
-		else if(step == 3){// 原地等待2秒，wait执行完会使step++，beginAngle更新
+		else if(myStep == 3){// 原地等待2秒，wait执行完会使myStep++，beginAngle更新
 			wait(2);
 		}
-		else if(step == 4){// 左转135度
+		else if(myStep == 4){// 左转135度
 			turnLeft(135.0);
 		}
-		else if(step == 5){// 原地等待2秒，wait执行完会使step++，beginAngle更新
+		else if(myStep == 5){// 原地等待2秒，wait执行完会使myStep++，beginAngle更新
 			wait(2);
 		}
-		else if(step == 6){// 右转135度
+		else if(myStep == 6){// 右转135度
 			turnRight(135.0);
 		}
-		else if(step == 7){// 所有任务完成，原地挂机
+		else if(myStep == 7){// 所有任务完成，原地挂机
 			makeSelfBanlance();
 		}
 	}
 	else if(mode == 3){// 红外避障模式
 		if(MovingCar == 1){ // 巡线阶段
-			if(directZeroCnt >= 8){ // 走到最后一段直线了
+			if(directZeroCnt >= 8){ // 走到最后一段直线了且遇到了横的
 				MovingCar = 0; // 退出巡线模式
+				lastDetectedTime = g_RunTime;
 				fixYaw(); // 调整车头
-				step++; // 走到下一步
+				myStep++; // 走到下一步
 			}
 			else{ // 还没到最后的直线，继续巡线
 				TailingControl();
 			}
 		}
-		if(step == 2){// 所有任务完成，原地挂机，调整车头
+		else if(myStep == 3){ // 所有任务完成，原地挂机，调整车头
 			fixYaw();
 		}
-		else if(step == 1){// 避障前进模式
+		else if(myStep == 2){ // 走20cm
+			if((g_iLeftTurnRoundCnt + g_iRightTurnRoundCnt)/2 > nowTurnAroundCnt - MOVING_20CM){
+				forward();
+			}
+			else{
+				myStep++;
+				fixYaw();
+			}
+		}
+		else if(myStep == 1){// 避障前进模式
 			if(isTurn){ // 正在转弯
 				if(lastTurn == TURNING_LEFT){
 					realTurnLeft(90); // 左转90
@@ -351,7 +379,8 @@ void UltraControl(int mode) // 每隔20ms 执行一次
 					realTurnRight(90); // 右转90
 				}
 			}
-			else if(Distance <= 20){ // 遇到障碍
+			else if(Distance <= DistanceThresh){ // 遇到障碍
+				Steer(0, -speed_4 );
 				beginAngle = g_fYawAngle; // 初始化
 				isTurn = 1; // 开启转弯模式
 				if(direct == MOVING_FORWARD){
@@ -368,15 +397,19 @@ void UltraControl(int mode) // 每隔20ms 执行一次
 					direct = MOVING_FORWARD;
 					lastTurn = TURNING_RIGHT;
 				}
-				else if(direct == -1){ // 现在朝右，左转转到向前
+				else if(direct == MOVING_RIGHT){ // 现在朝右，左转转到向前
 					direct = MOVING_FORWARD; 
 					lastTurn = TURNING_LEFT;
 				}
 			}
-			else if(direct == 0){ // 没有障碍且向前
+			else if(direct == MOVING_FORWARD){ // 没有障碍且向前
 				forward(); // 一边走一边修正角度
-				if(stopDetect()) { // 四个都检测到了黑线
-					step++; // 进入停车区
+				if(g_RunTime - lastDetectedTime >= 1) { // 四个都检测到了黑线
+					if(stopDetect()){
+						myStep++; // 进入停车区
+						nowTurnAroundCnt = (g_iLeftTurnRoundCnt + g_iRightTurnRoundCnt) / 2;
+					}
+				
 				}
 			}
 			else if(direct == MOVING_LEFT){ // 没有障碍且向左
@@ -884,7 +917,7 @@ void TailingControl(void)
 		direct = 4;
 	else
 		direct = 0;
-	speed = 2.2;
+	speed = 2;
 	Steer(direct, speed);
 	
 }
