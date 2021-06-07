@@ -100,19 +100,19 @@ int directZeroCnt = 0; // 连续朝0方向前进的次数，检测到四个1设�
 char detected = 0x01 | (0x01 << 1) | 0x01 << 2 | 0x01 << 3;// 记录红外传感器测量是否是四个1
 int lastDetectedTime = 0;
 
-//const float DistanceThresh = 15;
-// const int speed_0 = 2;
-// const int speed_1 = 3;
-// const int speed_2 = 4;
-// const int speed_3 = 5;
-// const int speed_4 = 6;
+const float DistanceThresh = 15;
+const int speed_0 = 2;
+const int speed_1 = 3;
+const int speed_2 = 4;
+const int speed_3 = 5;
+const int speed_4 = 6;
 
-const float DistanceThresh = 20;
-const int speed_0 = 3;
-const int speed_1 = 5;
-const int speed_2 = 6;
-const int speed_3 = 7;
-const int speed_4 = 9;
+// const float DistanceThresh = 20;
+// const int speed_0 = 3;
+// const int speed_1 = 5;
+// const int speed_2 = 6;
+// const int speed_3 = 7;
+// const int speed_4 = 9;
 
 int stopDetect(){
 	char fraredresult  = InfraredDetectAll(); // 记录红外数据
