@@ -99,20 +99,15 @@ int isTurn = 0; // 记录是否正在转弯，1为正在转弯
 int directZeroCnt = 0; // 连续朝0方向前进的次数，检测到四个1设置为100
 char detected = 0x01 | (0x01 << 1) | 0x01 << 2 | 0x01 << 3;// 记录红外传感器测量是否是四个1
 int lastDetectedTime = 0;
+char rrss;
+const float DistanceThresh = 20;
+const int speed_0 = 3;
+const int speed_1 = 4;
+const int speed_2 = 5;
+const int speed_3 = 7;
+const int speed_4 = 9;
 
-const float DistanceThresh = 15;
-const int speed_0 = 2;
-const int speed_1 = 3;
-const int speed_2 = 4;
-const int speed_3 = 5;
-const int speed_4 = 6;
-
-// const float DistanceThresh = 20;
-// const int speed_0 = 3;
-// const int speed_1 = 5;
-// const int speed_2 = 6;
-// const int speed_3 = 7;
-// const int speed_4 = 9;
+ 
 
 int stopDetect(){
 	char fraredresult  = InfraredDetectAll(); // 记录红外数据
@@ -388,9 +383,13 @@ void UltraControl(int mode) // 每隔20ms 执行一次
 						direct = MOVING_LEFT;  // 更新车头朝向
 						lastTurn = TURNING_LEFT; // 更新上次转向
 					}
-					else{ // 现在朝前遇到障碍，上次是右转，继续右转
+					else if(lastTurn == TURNING_RIGHT){ // 现在朝前遇到障碍，上次是右转，继续右转
 						direct = MOVING_RIGHT;
 						lastTurn = TURNING_RIGHT;
+					}
+					else{
+						direct = MOVING_LEFT;  // 更新车头朝向
+						lastTurn = TURNING_LEFT; // 更新上次转向
 					}
 				}
 				else if(direct == MOVING_LEFT){ // 现在朝左，右转转到向前
@@ -404,7 +403,7 @@ void UltraControl(int mode) // 每隔20ms 执行一次
 			}
 			else if(direct == MOVING_FORWARD){ // 没有障碍且向前
 				forward(); // 一边走一边修正角度
-				if(g_RunTime - lastDetectedTime >= 1) { // 四个都检测到了黑线
+				if(g_RunTime - lastDetectedTime >= 3) { // 四个都检测到了黑线
 					if(stopDetect()){
 						myStep++; // 进入停车区
 						nowTurnAroundCnt = (g_iLeftTurnRoundCnt + g_iRightTurnRoundCnt) / 2;
@@ -907,17 +906,18 @@ void TailingControl(void)
 	else{
 		result = InfraredDetect();
 	}
-	if(result & infrared_channel_Lb)
-		direct = -10;
-	else if(result & infrared_channel_La)
+	
+	if(result & infrared_channel_La)
 		direct = -4;
-	else if(result & infrared_channel_Rb)
-		direct = 10;
 	else if(result & infrared_channel_Ra)
 		direct = 4;
+	else if(result & infrared_channel_Rb)
+		direct = 6;
+	else if(result & infrared_channel_Lb)
+		direct = -6;
 	else
 		direct = 0;
-	speed = 2;
+	speed = 2.3;
 	Steer(direct, speed);
 	
 }

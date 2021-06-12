@@ -35,7 +35,7 @@ typedef struct _PID_t{
 
 extern short  g_s16LeftMotorPulse;
 extern short  g_s16RightMotorPulse;
-
+extern char rrss;
 extern int g_iLeftTurnRoundCnt;
 extern int g_iRightTurnRoundCnt;
 

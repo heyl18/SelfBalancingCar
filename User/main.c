@@ -38,7 +38,7 @@ void SecTask()
 	
 	if(StatusFlag)ResponseStatus();
 	
-	LEDToggle();
+	// LEDToggle();
 }
 
 
@@ -59,7 +59,7 @@ int main(void)
 	if(IsInfrareOK())
 		g_iGravity_Offset = 1; //若果检测到悬挂红外模块，则更改偏移值。
 	
-	ShowHomePageInit();
+	// ShowHomePageInit();
  
 	while (1)
 	{
@@ -69,10 +69,10 @@ int main(void)
 		if(SoftTimer[2] == 0)
 		{
 			SoftTimer[2] = 20;
-			ShowHomePage();
+			// ShowHomePage();
 	
 			Read_Distane();
-
+			//rrss = InfraredDetectAll();
 			if(IsUltraOK())
 				UltraControl(3); // 巡线避障
 			// if(IsUltraOK())

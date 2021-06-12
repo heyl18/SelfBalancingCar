@@ -65,20 +65,20 @@ void ShowHomePage(void)
 	}
 
 	if(step == 2){
-		snprintf((char*)buff, 21,  "LeftRoundCnt:  %d         ",g_iLeftTurnRoundCnt);
+		snprintf((char*)buff, 21,  "1:  %d         ",rrss & 1);
 		OLED_ShowString(0, 2, buff);
 	}
 	if(step == 3){
-		snprintf((char*)buff, 21, "RightRoundCnt: %d         ",g_iRightTurnRoundCnt);
+		snprintf((char*)buff, 21, "2: %d         ",(rrss>>1) & 1);
 		OLED_ShowString(0, 3, buff);
 	}
 	
 	if(step == 4){
-		snprintf((char*)buff, 21, "myStep:     %d      ", myStep);
+		snprintf((char*)buff, 21, "3:     %d      ", (rrss>>2) & 1);
 		OLED_ShowString(0, 4, buff);
 	}
 	if(step == 5){
-		snprintf((char*)buff, 21, "Battery:   %0.1f(V)      ", g_BatVolt/100.0);
+		snprintf((char*)buff, 21, "4:   %d      ", (rrss>>3) & 1);
 		OLED_ShowString(0, 5, buff);		
 	}
 	if(step == 6){
